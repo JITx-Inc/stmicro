@@ -15,8 +15,8 @@ defpackage stmicro/components/STM32H723VGT6-supports :
 public pcb-bundle pwm :
   pin pwm
 
-public defn STM32H723VGT6-supports () :
-  inside pcb-component :
+public defn STM32H723VGT6-supports (stm) :
+  inside pcb-module :
 
     pcb-bundle SWD_SWDIO:
       pin p
@@ -24,9 +24,9 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports SWD_SWDIO:
-      SWD_SWDIO.p => self.PA[13]
+      SWD_SWDIO.p => stm.PA[13]
     supports SWD_SWDCLK:
-      SWD_SWDCLK.p => self.PA[14]
+      SWD_SWDCLK.p => stm.PA[14]
 
     supports swd() :
       require swdio : SWD_SWDIO
@@ -40,53 +40,53 @@ public defn STM32H723VGT6-supports () :
       ;property(swdclk.p.stm32-pin-mode) = STMSerialWireDebugMode
 
     supports reset:
-      reset.reset => self.NRST
+      reset.p => stm.NRST
 
     ; ; does not account for P/N differential ADC inputs 
-    val ADC123-LIST = [self.PC[0] self.PC[1]]
-    val ADC12-LIST = [self.PA[2] self.PA[3] self.PA[4] self.PA[5] self.PA[6] self.PA[7] self.PB[0] self.PB[1]  self.PC[4] self.PC[5]]
-    val ADC1-LIST = [self.PA[0] self.PA[1]]
-    val ADC3-LIST = [self.PC[2] self.PC[3]]
+    val ADC123-LIST = [stm.PC[0] stm.PC[1]]
+    val ADC12-LIST = [stm.PA[2] stm.PA[3] stm.PA[4] stm.PA[5] stm.PA[6] stm.PA[7] stm.PB[0] stm.PB[1]  stm.PC[4] stm.PC[5]]
+    val ADC1-LIST = [stm.PA[0] stm.PA[1]]
+    val ADC3-LIST = [stm.PC[2] stm.PC[3]]
 
     for (p in ADC123-LIST, i in 0 to false) do :
       supports adc:
-        adc.adc => p
+        adc.p => p
     for (p in ADC12-LIST, i in 0 to false) do :
       supports adc:
-        adc.adc => p
+        adc.p => p
     for (p in ADC1-LIST, i in 0 to false) do :
       supports adc:
-        adc.adc => p
+        adc.p => p
     for (p in ADC3-LIST, i in 0 to false) do :
       supports adc:
-        adc.adc => p
+        adc.p => p
         ; property(p.stm32-signal-name) = to-string("ADCx_IN%_" % [i])
         ; property(p.stm32-ip-name) = STMADC1IP
         ; ;property(swdio.p.stm32-ip-name) = STMADC2IP
 
-    for p in pins(self.PA) do:
+    for p in pins(stm.PA) do:
       supports gpio :
-        gpio.gpio => p
+        gpio.p => p
         property(p.stm32-signal-name) = "GPIO"
       
-    for p in pins(self.PB) do:
+    for p in pins(stm.PB) do:
       supports gpio :
-        gpio.gpio => p
+        gpio.p => p
         property(p.stm32-signal-name) = "GPIO"
 
-    for p in pins(self.PC) do:
+    for p in pins(stm.PC) do:
       supports gpio :
-        gpio.gpio => p
+        gpio.p => p
         property(p.stm32-signal-name) = "GPIO"      
 
-    for p in pins(self.PD) do:
+    for p in pins(stm.PD) do:
       supports gpio :
-        gpio.gpio => p
+        gpio.p => p
         property(p.stm32-signal-name) = "GPIO"      
 
-    for p in pins(self.PE) do:
+    for p in pins(stm.PE) do:
       supports gpio :
-        gpio.gpio => p
+        gpio.p => p
         property(p.stm32-signal-name) = "GPIO"      
 
     pcb-bundle RCC_OSC_IN:
@@ -95,9 +95,9 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports RCC_OSC_IN:
-      RCC_OSC_IN.p => self.PH[0]
+      RCC_OSC_IN.p => stm.PH[0]
     supports RCC_OSC_OUT:
-      RCC_OSC_OUT.p => self.PH[1]
+      RCC_OSC_OUT.p => stm.PH[1]
     
     ; TODO
     ;supports high-freq-oscillator:
@@ -119,9 +119,9 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports RCC_OSC32_IN:
-      RCC_OSC32_IN.p => self.PC[14]
+      RCC_OSC32_IN.p => stm.PC[14]
     supports RCC_OSC32_OUT:
-      RCC_OSC32_OUT.p => self.PC[15]
+      RCC_OSC32_OUT.p => stm.PC[15]
     
     ; TODO
     ;supports low-freq-oscillator:
@@ -154,31 +154,31 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports USART1_TX:
-      USART1_TX.p => self.PA[9]
+      USART1_TX.p => stm.PA[9]
     supports USART1_TX:
-      USART1_TX.p => self.PB[6]
+      USART1_TX.p => stm.PB[6]
     supports USART1_TX:
-      USART1_TX.p => self.PB[14]
+      USART1_TX.p => stm.PB[14]
 
     supports USART1_RX:
-      USART1_RX.p => self.PB[15]
+      USART1_RX.p => stm.PB[15]
     supports USART1_RX:
-      USART1_RX.p => self.PA[10]
+      USART1_RX.p => stm.PA[10]
     supports USART1_RX:
-      USART1_RX.p => self.PB[7]
+      USART1_RX.p => stm.PB[7]
       
     supports USART1_RTS:
-      USART1_RTS.p => self.PA[12]
+      USART1_RTS.p => stm.PA[12]
     supports USART1_CTS:
-      USART1_CTS.p => self.PA[11]
+      USART1_CTS.p => stm.PA[11]
     supports USART1_CK:
-      USART1_CK.p => self.PA[8]
+      USART1_CK.p => stm.PA[8]
 
-    supports uart():
+    supports minimal-uart():
       require tx-pin: USART1_TX
       require rx-pin: USART1_RX
-      uart().tx => tx-pin.p
-      uart().rx => rx-pin.p
+      minimal-uart().tx => tx-pin.p
+      minimal-uart().rx => rx-pin.p
       property(tx-pin.p.stm32-signal-name) = "USART1_TX"
       property(rx-pin.p.stm32-signal-name) = "USART1_RX"
       ; TODO
@@ -268,35 +268,35 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports USART2_TX:
-      USART2_TX.p => self.PA[2]
+      USART2_TX.p => stm.PA[2]
     supports USART2_TX:
-      USART2_TX.p => self.PD[5]
+      USART2_TX.p => stm.PD[5]
 
     supports USART2_RX:
-      USART2_RX.p => self.PA[3]
+      USART2_RX.p => stm.PA[3]
     supports USART2_RX:
-      USART2_RX.p => self.PD[6]
+      USART2_RX.p => stm.PD[6]
 
     supports USART2_RTS:
-      USART2_RTS.p => self.PA[1]
+      USART2_RTS.p => stm.PA[1]
     supports USART2_RTS:
-      USART2_RTS.p => self.PD[4]
+      USART2_RTS.p => stm.PD[4]
       
     supports USART2_CTS:
-      USART2_CTS.p => self.PA[0]
+      USART2_CTS.p => stm.PA[0]
     supports USART2_CTS:
-      USART2_CTS.p => self.PD[3]
+      USART2_CTS.p => stm.PD[3]
 
     supports USART2_CK:
-      USART2_CK.p => self.PA[4]
+      USART2_CK.p => stm.PA[4]
     supports USART2_CK:
-      USART2_CK.p => self.PD[7]
+      USART2_CK.p => stm.PD[7]
 
-    supports uart():
+    supports minimal-uart():
       require tx-pin: USART2_TX
       require rx-pin: USART2_RX
-      uart().tx => tx-pin.p
-      uart().rx => rx-pin.p
+      minimal-uart().tx => tx-pin.p
+      minimal-uart().rx => rx-pin.p
       ; TODO
       ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
       ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
@@ -305,8 +305,8 @@ public defn STM32H723VGT6-supports () :
       ; property(tx-pin.p.stm32-ip-name) = STMUSART2IP
       ; property(rx-pin.p.stm32-ip-name) = STMUSART2IP
 
-    property(self.PA[2].SUPPORTS-BOOT) = true
-    property(self.PA[3].SUPPORTS-BOOT) = true
+    property(stm.PA[2].SUPPORTS-BOOT) = true
+    property(stm.PA[3].SUPPORTS-BOOT) = true
 
     supports uart(UART-RX, UART-TX, UART-RTS, UART-CTS):
       require tx-pin: USART2_TX
@@ -348,13 +348,13 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2C1_SCL:
-      I2C1_SCL.p => self.PB[6] ; boot
+      I2C1_SCL.p => stm.PB[6] ; boot
     supports I2C1_SCL:
-      I2C1_SCL.p => self.PB[8]
+      I2C1_SCL.p => stm.PB[8]
     supports I2C1_SDA:
-      I2C1_SDA.p => self.PB[7]
+      I2C1_SDA.p => stm.PB[7]
     supports I2C1_SDA:
-      I2C1_SDA.p => self.PB[9]
+      I2C1_SDA.p => stm.PB[9]
 
     supports i2c:
       require scl-pin: I2C1_SCL
@@ -374,9 +374,9 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2C2_SCL:
-      I2C2_SCL.p => self.PB[10]
+      I2C2_SCL.p => stm.PB[10]
     supports I2C2_SDA:
-      I2C2_SDA.p => self.PB[11]
+      I2C2_SDA.p => stm.PB[11]
 
     supports i2c:
       require scl-pin: I2C2_SCL
@@ -397,9 +397,9 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2C3_SCL:
-      I2C3_SCL.p => self.PA[8]
+      I2C3_SCL.p => stm.PA[8]
     supports I2C3_SDA:
-      I2C3_SDA.p => self.PC[9]
+      I2C3_SDA.p => stm.PC[9]
 
     supports i2c:
       require scl-pin: I2C3_SCL
@@ -419,17 +419,17 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2C4_SCL:
-      I2C4_SCL.p => self.PD[12]
+      I2C4_SCL.p => stm.PD[12]
     supports I2C4_SCL:
-      I2C4_SCL.p => self.PB[6]
+      I2C4_SCL.p => stm.PB[6]
     supports I2C4_SCL:
-      I2C4_SCL.p => self.PB[8]
+      I2C4_SCL.p => stm.PB[8]
     supports I2C4_SDA:
-      I2C4_SDA.p => self.PD[13]
+      I2C4_SDA.p => stm.PD[13]
     supports I2C4_SDA:
-      I2C4_SDA.p => self.PB[7]
+      I2C4_SDA.p => stm.PB[7]
     supports I2C4_SDA:
-      I2C4_SDA.p => self.PB[9]
+      I2C4_SDA.p => stm.PB[9]
       
 
     supports i2c:
@@ -450,13 +450,13 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2C5_SCL:
-      I2C5_SCL.p => self.PA[8]
+      I2C5_SCL.p => stm.PA[8]
     supports I2C5_SCL:
-      I2C5_SCL.p => self.PC[11]
+      I2C5_SCL.p => stm.PC[11]
     supports I2C5_SDA:
-      I2C5_SDA.p => self.PC[10]
+      I2C5_SDA.p => stm.PC[10]
     supports I2C5_SDA:
-      I2C5_SDA.p => self.PC[9]
+      I2C5_SDA.p => stm.PC[9]
       
     supports i2c:
       require scl-pin: I2C5_SCL
@@ -480,28 +480,28 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports SPI1_NSS:
-      SPI1_NSS.p => self.PA[4]
+      SPI1_NSS.p => stm.PA[4]
     supports SPI1_NSS:
-      SPI1_NSS.p => self.PA[15]
+      SPI1_NSS.p => stm.PA[15]
     supports SPI1_SCK:
-      SPI1_SCK.p => self.PA[5]
+      SPI1_SCK.p => stm.PA[5]
     supports SPI1_SCK:
-      SPI1_SCK.p => self.PB[3]
+      SPI1_SCK.p => stm.PB[3]
     supports SPI1_MOSI:
-      SPI1_MOSI.p => self.PA[7]
+      SPI1_MOSI.p => stm.PA[7]
     supports SPI1_MOSI:
-      SPI1_MOSI.p => self.PD[7]
+      SPI1_MOSI.p => stm.PD[7]
     supports SPI1_MOSI:
-      SPI1_MOSI.p => self.PB[5]
+      SPI1_MOSI.p => stm.PB[5]
     supports SPI1_MISO:
-      SPI1_MISO.p => self.PA[6]
+      SPI1_MISO.p => stm.PA[6]
     supports SPI1_MISO:
-      SPI1_MISO.p => self.PB[4]
+      SPI1_MISO.p => stm.PB[4]
 
-    property(self.PA[4].SUPPORTS-BOOT) = true
-    property(self.PA[5].SUPPORTS-BOOT) = true
-    property(self.PA[6].SUPPORTS-BOOT) = true
-    property(self.PA[7].SUPPORTS-BOOT) = true
+    property(stm.PA[4].SUPPORTS-BOOT) = true
+    property(stm.PA[5].SUPPORTS-BOOT) = true
+    property(stm.PA[6].SUPPORTS-BOOT) = true
+    property(stm.PA[7].SUPPORTS-BOOT) = true
 
     ; TODO
     ;supports spi-controller():
@@ -537,29 +537,29 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports SPI2_NSS:
-      SPI2_NSS.p => self.PB[12]
+      SPI2_NSS.p => stm.PB[12]
     supports SPI2_NSS:
-      SPI2_NSS.p => self.PA[11]
+      SPI2_NSS.p => stm.PA[11]
     supports SPI2_NSS:
-      SPI2_NSS.p => self.PB[4]
+      SPI2_NSS.p => stm.PB[4]
     supports SPI2_NSS:
-      SPI2_NSS.p => self.PB[9]
+      SPI2_NSS.p => stm.PB[9]
     supports SPI2_SCK:
-      SPI2_SCK.p => self.PB[10]
+      SPI2_SCK.p => stm.PB[10]
     supports SPI2_SCK:
-      SPI2_SCK.p => self.PB[13]
+      SPI2_SCK.p => stm.PB[13]
     supports SPI2_SCK:
-      SPI2_SCK.p => self.PA[9]
+      SPI2_SCK.p => stm.PA[9]
     supports SPI2_SCK:
-      SPI2_SCK.p => self.PA[12]
+      SPI2_SCK.p => stm.PA[12]
     supports SPI2_SCK:
-      SPI2_SCK.p => self.PD[3]
+      SPI2_SCK.p => stm.PD[3]
     supports SPI2_MOSI:
-      SPI2_MOSI.p => self.PC[1]
+      SPI2_MOSI.p => stm.PC[1]
     supports SPI2_MOSI:
-      SPI2_MOSI.p => self.PB[15]
+      SPI2_MOSI.p => stm.PB[15]
     supports SPI2_MISO:
-      SPI2_MISO.p => self.PB[14]
+      SPI2_MISO.p => stm.PB[14]
     
     ; TODO
     ;supports spi-controller():
@@ -595,25 +595,25 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports SPI3_NSS:
-      SPI3_NSS.p => self.PA[4]
+      SPI3_NSS.p => stm.PA[4]
     supports SPI3_NSS:
-      SPI3_NSS.p => self.PA[15]
+      SPI3_NSS.p => stm.PA[15]
     supports SPI3_SCK:
-      SPI3_SCK.p => self.PC[10]
+      SPI3_SCK.p => stm.PC[10]
     supports SPI3_SCK:
-      SPI3_SCK.p => self.PB[3]
+      SPI3_SCK.p => stm.PB[3]
     supports SPI3_MOSI:
-      SPI3_MOSI.p => self.PB[2]
+      SPI3_MOSI.p => stm.PB[2]
     supports SPI3_MOSI:
-      SPI3_MOSI.p => self.PC[12]
+      SPI3_MOSI.p => stm.PC[12]
     supports SPI3_MOSI:
-      SPI3_MOSI.p => self.PD[6]
+      SPI3_MOSI.p => stm.PD[6]
     supports SPI3_MOSI:
-      SPI3_MOSI.p => self.PB[5]
+      SPI3_MOSI.p => stm.PB[5]
     supports SPI3_MISO:
-      SPI3_MISO.p => self.PC[11]
+      SPI3_MISO.p => stm.PC[11]
     supports SPI3_MISO:
-      SPI3_MISO.p => self.PB[4]
+      SPI3_MISO.p => stm.PB[4]
 
     ;supports spi-controller():
     ;  require sdo-pin: SPI3_MOSI
@@ -635,26 +635,26 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports SPI4_NSS:
-      SPI4_NSS.p => self.PE[4]
+      SPI4_NSS.p => stm.PE[4]
     supports SPI4_NSS:
-      SPI4_NSS.p => self.PE[11]
+      SPI4_NSS.p => stm.PE[11]
     supports SPI4_SCK:
-      SPI4_SCK.p => self.PE[2]
+      SPI4_SCK.p => stm.PE[2]
     supports SPI4_SCK:
-      SPI4_SCK.p => self.PE[12]
+      SPI4_SCK.p => stm.PE[12]
     supports SPI4_MOSI:
-      SPI4_MOSI.p => self.PE[6]
+      SPI4_MOSI.p => stm.PE[6]
     supports SPI4_MOSI:
-      SPI4_MOSI.p => self.PE[14]
+      SPI4_MOSI.p => stm.PE[14]
     supports SPI4_MISO:
-      SPI4_MISO.p => self.PE[15]
+      SPI4_MISO.p => stm.PE[15]
     supports SPI4_MISO:
-      SPI4_MISO.p => self.PE[13]
+      SPI4_MISO.p => stm.PE[13]
 
-    property(self.PE[11].SUPPORTS-BOOT) = true
-    property(self.PE[12].SUPPORTS-BOOT) = true
-    property(self.PE[13].SUPPORTS-BOOT) = true
-    property(self.PE[14].SUPPORTS-BOOT) = true
+    property(stm.PE[11].SUPPORTS-BOOT) = true
+    property(stm.PE[12].SUPPORTS-BOOT) = true
+    property(stm.PE[13].SUPPORTS-BOOT) = true
+    property(stm.PE[14].SUPPORTS-BOOT) = true
 
     ; TODO
     ;supports spi-controller():
@@ -677,25 +677,25 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports SPI6_NSS:
-      SPI6_NSS.p => self.PA[0]
+      SPI6_NSS.p => stm.PA[0]
     supports SPI6_NSS:
-      SPI6_NSS.p => self.PA[4]
+      SPI6_NSS.p => stm.PA[4]
     supports SPI6_NSS:
-      SPI6_NSS.p => self.PA[15]
+      SPI6_NSS.p => stm.PA[15]
     supports SPI6_SCK:
-      SPI6_SCK.p => self.PA[5]
+      SPI6_SCK.p => stm.PA[5]
     supports SPI6_SCK:
-      SPI6_SCK.p => self.PC[12]
+      SPI6_SCK.p => stm.PC[12]
     supports SPI6_SCK:
-      SPI6_SCK.p => self.PB[3]
+      SPI6_SCK.p => stm.PB[3]
     supports SPI6_MOSI:
-      SPI6_MOSI.p => self.PA[7]
+      SPI6_MOSI.p => stm.PA[7]
     supports SPI6_MOSI:
-      SPI6_MOSI.p => self.PB[5]
+      SPI6_MOSI.p => stm.PB[5]
     supports SPI6_MISO:
-      SPI6_MISO.p => self.PA[6]
+      SPI6_MISO.p => stm.PA[6]
     supports SPI6_MISO:
-      SPI6_MISO.p => self.PB[4]
+      SPI6_MISO.p => stm.PB[4]
     
     ; TODO
     ;supports spi-controller():
@@ -721,26 +721,26 @@ public defn STM32H723VGT6-supports () :
     ;  pin p
 
     supports I2S1-CK :
-      I2S1-CK.p => self.PA[5]
+      I2S1-CK.p => stm.PA[5]
     supports I2S1-CK :
-      I2S1-CK.p => self.PB[3]
+      I2S1-CK.p => stm.PB[3]
     supports I2S1-SDI :
-      I2S1-SDI.p => self.PA[6]
+      I2S1-SDI.p => stm.PA[6]
     supports I2S1-SDI :
-      I2S1-SDI.p => self.PB[4]
+      I2S1-SDI.p => stm.PB[4]
     supports I2S1-SDO :
-      I2S1-SDO.p => self.PA[7]
+      I2S1-SDO.p => stm.PA[7]
     supports I2S1-SDO :
-      I2S1-SDO.p => self.PD[7]
+      I2S1-SDO.p => stm.PD[7]
     supports I2S1-SDO :
-      I2S1-SDO.p => self.PB[5]
+      I2S1-SDO.p => stm.PB[5]
     supports I2S1-WS :
-      I2S1-WS.p => self.PA[4]
+      I2S1-WS.p => stm.PA[4]
     supports I2S1-WS :
-      I2S1-WS.p => self.PA[15]
+      I2S1-WS.p => stm.PA[15]
     ; TODO: find this
     ;supports I2S1-MCK :
-    ;  I2S1-MCK.p => self.PC[4]
+    ;  I2S1-MCK.p => stm.PC[4]
     
     ; TODO: find this
     ;val i2s-io = i2s([I2S-MCK I2S-SDMI])
@@ -770,31 +770,31 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2S2-CK :
-      I2S2-CK.p => self.PB[10]
+      I2S2-CK.p => stm.PB[10]
     supports I2S2-CK :
-      I2S2-CK.p => self.PB[13]
+      I2S2-CK.p => stm.PB[13]
     supports I2S2-CK :
-      I2S2-CK.p => self.PA[9]
+      I2S2-CK.p => stm.PA[9]
     supports I2S2-CK :
-      I2S2-CK.p => self.PA[12]
+      I2S2-CK.p => stm.PA[12]
     supports I2S2-CK :
-      I2S2-CK.p => self.PD[3]
+      I2S2-CK.p => stm.PD[3]
     supports I2S2-SDI :
-      I2S2-SDI.p => self.PB[14]
+      I2S2-SDI.p => stm.PB[14]
     supports I2S2-SDO :
-      I2S2-SDO.p => self.PC[1]
+      I2S2-SDO.p => stm.PC[1]
     supports I2S2-SDO :
-      I2S2-SDO.p => self.PB[15]
+      I2S2-SDO.p => stm.PB[15]
     supports I2S2-WS :
-      I2S2-WS.p => self.PB[12]
+      I2S2-WS.p => stm.PB[12]
     supports I2S2-WS :
-      I2S2-WS.p => self.PA[11]
+      I2S2-WS.p => stm.PA[11]
     supports I2S2-WS :
-      I2S2-WS.p => self.PB[4]
+      I2S2-WS.p => stm.PB[4]
     supports I2S2-WS :
-      I2S2-WS.p => self.PB[9]
+      I2S2-WS.p => stm.PB[9]
     supports I2S2-MCK :
-      I2S2-MCK.p => self.PC[6]
+      I2S2-MCK.p => stm.PC[6]
     
     ; TODO
     ;supports i2s-io :
@@ -822,27 +822,27 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2S3-CK :
-      I2S3-CK.p => self.PC[10]
+      I2S3-CK.p => stm.PC[10]
     supports I2S3-CK :
-      I2S3-CK.p => self.PB[3]
+      I2S3-CK.p => stm.PB[3]
     supports I2S3-SDI :
-      I2S3-SDI.p => self.PC[11]
+      I2S3-SDI.p => stm.PC[11]
     supports I2S3-SDI :
-      I2S3-SDI.p => self.PB[4]
+      I2S3-SDI.p => stm.PB[4]
     supports I2S3-SDO :
-      I2S3-SDO.p => self.PB[2]
+      I2S3-SDO.p => stm.PB[2]
     supports I2S3-SDO :
-      I2S3-SDO.p => self.PC[12]
+      I2S3-SDO.p => stm.PC[12]
     supports I2S3-SDO :
-      I2S3-SDO.p => self.PD[6]
+      I2S3-SDO.p => stm.PD[6]
     supports I2S3-SDO :
-      I2S3-SDO.p => self.PB[5]
+      I2S3-SDO.p => stm.PB[5]
     supports I2S3-WS :
-      I2S3-WS.p => self.PA[4]
+      I2S3-WS.p => stm.PA[4]
     supports I2S3-WS :
-      I2S3-WS.p => self.PA[15]
+      I2S3-WS.p => stm.PA[15]
     supports I2S3-MCK :
-      I2S3-MCK.p => self.PC[7]
+      I2S3-MCK.p => stm.PC[7]
     
     ; TODO
     ;supports i2s-io :
@@ -869,30 +869,30 @@ public defn STM32H723VGT6-supports () :
       pin p
 
     supports I2S6-CK :
-      I2S6-CK.p => self.PA[5]
+      I2S6-CK.p => stm.PA[5]
     supports I2S6-CK :
-      I2S6-CK.p => self.PC[12]
+      I2S6-CK.p => stm.PC[12]
     supports I2S6-CK :
-      I2S6-CK.p => self.PB[3]
+      I2S6-CK.p => stm.PB[3]
     supports I2S6-SDI :
-      I2S6-SDI.p => self.PA[6]
+      I2S6-SDI.p => stm.PA[6]
     supports I2S6-SDI :
-      I2S6-SDI.p => self.PB[4]
+      I2S6-SDI.p => stm.PB[4]
     supports I2S6-SDI :
-      I2S6-SDI.p => self.PA[6]
+      I2S6-SDI.p => stm.PA[6]
     supports I2S6-SDO :
-      I2S6-SDO.p => self.PA[7]
+      I2S6-SDO.p => stm.PA[7]
     supports I2S6-SDO :
-      I2S6-SDO.p => self.PB[5]
+      I2S6-SDO.p => stm.PB[5]
     supports I2S6-WS :
-      I2S6-WS.p => self.PA[0]
+      I2S6-WS.p => stm.PA[0]
     supports I2S6-WS :
-      I2S6-WS.p => self.PA[4]
+      I2S6-WS.p => stm.PA[4]
     supports I2S6-WS :
-      I2S6-WS.p => self.PA[15]
+      I2S6-WS.p => stm.PA[15]
     ; TODO: find this
     ;supports I2S6-MCK :
-    ;  I2S6-MCK.p => self.PA[3]
+    ;  I2S6-MCK.p => stm.PA[3]
     
     ; TODO
     ;supports i2s-io :
@@ -918,21 +918,21 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM1-CH1 :
-      TIM1-CH1.p => self.PE[9]
+      TIM1-CH1.p => stm.PE[9]
     supports TIM1-CH1 :
-      TIM1-CH1.p => self.PA[8]
+      TIM1-CH1.p => stm.PA[8]
     supports TIM1-CH2 :
-      TIM1-CH2.p => self.PE[11]
+      TIM1-CH2.p => stm.PE[11]
     supports TIM1-CH2 :
-      TIM1-CH2.p => self.PA[9]
+      TIM1-CH2.p => stm.PA[9]
     supports TIM1-CH3 :
-      TIM1-CH3.p => self.PE[13]
+      TIM1-CH3.p => stm.PE[13]
     supports TIM1-CH3 :
-      TIM1-CH3.p => self.PA[10]
+      TIM1-CH3.p => stm.PA[10]
     supports TIM1-CH4 :
-      TIM1-CH4.p => self.PE[14]
+      TIM1-CH4.p => stm.PE[14]
     supports TIM1-CH4 :
-      TIM1-CH4.p => self.PA[11]
+      TIM1-CH4.p => stm.PA[11]
     
     
     pcb-bundle TIM2-CH1 :
@@ -945,21 +945,21 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM2-CH1 :
-      TIM2-CH1.p => self.PA[0]
+      TIM2-CH1.p => stm.PA[0]
     supports TIM2-CH1 :
-      TIM2-CH1.p => self.PA[5]
+      TIM2-CH1.p => stm.PA[5]
     supports TIM2-CH1 :
-      TIM2-CH1.p => self.PA[15]
+      TIM2-CH1.p => stm.PA[15]
     supports TIM2-CH2 :
-      TIM2-CH2.p => self.PA[1]
+      TIM2-CH2.p => stm.PA[1]
     supports TIM2-CH2 :
-      TIM2-CH2.p => self.PB[3]
+      TIM2-CH2.p => stm.PB[3]
     supports TIM2-CH3 :
-      TIM2-CH3.p => self.PA[2]
+      TIM2-CH3.p => stm.PA[2]
     supports TIM2-CH3 :
-      TIM2-CH3.p => self.PB[11]
+      TIM2-CH3.p => stm.PB[11]
     supports TIM2-CH4 :
-      TIM2-CH4.p => self.PA[3]
+      TIM2-CH4.p => stm.PA[3]
     
     pcb-bundle TIM3-CH1 :
       pin p
@@ -971,25 +971,25 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM3-CH1 :
-      TIM3-CH1.p => self.PA[6]
+      TIM3-CH1.p => stm.PA[6]
     supports TIM3-CH1 :
-      TIM3-CH1.p => self.PC[6]
+      TIM3-CH1.p => stm.PC[6]
     supports TIM3-CH1 :
-      TIM3-CH1.p => self.PB[4]
+      TIM3-CH1.p => stm.PB[4]
     supports TIM3-CH2 :
-      TIM3-CH2.p => self.PA[7]
+      TIM3-CH2.p => stm.PA[7]
     supports TIM3-CH2 :
-      TIM3-CH2.p => self.PC[7]
+      TIM3-CH2.p => stm.PC[7]
     supports TIM3-CH2 :
-      TIM3-CH2.p => self.PB[5]
+      TIM3-CH2.p => stm.PB[5]
     supports TIM3-CH3 :
-      TIM3-CH3.p => self.PB[0]
+      TIM3-CH3.p => stm.PB[0]
     supports TIM3-CH3 :
-      TIM3-CH3.p => self.PC[8]
+      TIM3-CH3.p => stm.PC[8]
     supports TIM3-CH4 :
-      TIM3-CH4.p => self.PB[1]
+      TIM3-CH4.p => stm.PB[1]
     supports TIM3-CH4 :
-      TIM3-CH4.p => self.PC[9]
+      TIM3-CH4.p => stm.PC[9]
     
     pcb-bundle TIM4-CH1 :
       pin p
@@ -1001,21 +1001,21 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM4-CH1 :
-      TIM4-CH1.p => self.PD[12]
+      TIM4-CH1.p => stm.PD[12]
     supports TIM4-CH1 :
-      TIM4-CH1.p => self.PB[6]
+      TIM4-CH1.p => stm.PB[6]
     supports TIM4-CH2 :
-      TIM4-CH2.p => self.PD[13]
+      TIM4-CH2.p => stm.PD[13]
     supports TIM4-CH2 :
-      TIM4-CH2.p => self.PB[7]
+      TIM4-CH2.p => stm.PB[7]
     supports TIM4-CH3 :
-      TIM4-CH3.p => self.PD[14]
+      TIM4-CH3.p => stm.PD[14]
     supports TIM4-CH3 :
-      TIM4-CH3.p => self.PB[8]
+      TIM4-CH3.p => stm.PB[8]
     supports TIM4-CH4 :
-      TIM4-CH4.p => self.PD[15]
+      TIM4-CH4.p => stm.PD[15]
     supports TIM4-CH4 :
-      TIM4-CH4.p => self.PB[9]
+      TIM4-CH4.p => stm.PB[9]
     
     pcb-bundle TIM5-CH1 :
       pin p
@@ -1027,13 +1027,13 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM5-CH1 :
-      TIM5-CH1.p => self.PA[0]
+      TIM5-CH1.p => stm.PA[0]
     supports TIM5-CH2 :
-      TIM5-CH2.p => self.PA[1]
+      TIM5-CH2.p => stm.PA[1]
     supports TIM5-CH3 :
-      TIM5-CH3.p => self.PA[2]
+      TIM5-CH3.p => stm.PA[2]
     supports TIM5-CH4 :
-      TIM5-CH4.p => self.PA[3]
+      TIM5-CH4.p => stm.PA[3]
 
 
     pcb-bundle TIM8-CH1 :
@@ -1046,25 +1046,25 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM8-CH1 :
-      TIM8-CH1.p => self.PA[5]
+      TIM8-CH1.p => stm.PA[5]
     supports TIM8-CH1 :
-      TIM8-CH1.p => self.PA[7]
+      TIM8-CH1.p => stm.PA[7]
     supports TIM8-CH1 :
-      TIM8-CH1.p => self.PC[6]
+      TIM8-CH1.p => stm.PC[6]
     supports TIM8-CH2 :
-      TIM8-CH2.p => self.PB[0]
+      TIM8-CH2.p => stm.PB[0]
     supports TIM8-CH2 :
-      TIM8-CH2.p => self.PB[14]
+      TIM8-CH2.p => stm.PB[14]
     supports TIM8-CH2 :
-      TIM8-CH2.p => self.PC[7]
+      TIM8-CH2.p => stm.PC[7]
     supports TIM8-CH3 :
-      TIM8-CH3.p => self.PB[1]
+      TIM8-CH3.p => stm.PB[1]
     supports TIM8-CH3 :
-      TIM8-CH3.p => self.PB[15]
+      TIM8-CH3.p => stm.PB[15]
     supports TIM8-CH3 :
-      TIM8-CH3.p => self.PC[8]
+      TIM8-CH3.p => stm.PC[8]
     supports TIM8-CH4 :
-      TIM8-CH4.p => self.PC[9]
+      TIM8-CH4.p => stm.PC[9]
 
 
     pcb-bundle TIM12-CH1 :
@@ -1073,22 +1073,22 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM12-CH1 :
-      TIM12-CH1.p => self.PB[14]
+      TIM12-CH1.p => stm.PB[14]
     supports TIM12-CH2 :
-      TIM12-CH2.p => self.PB[15]
+      TIM12-CH2.p => stm.PB[15]
     
     
     pcb-bundle TIM13-CH1 :
       pin p
     
     supports TIM13-CH1 :
-      TIM13-CH1.p => self.PA[6]
+      TIM13-CH1.p => stm.PA[6]
     
     pcb-bundle TIM14-CH1 :
       pin p
     
     supports TIM14-CH1 :
-      TIM14-CH1.p => self.PA[7]
+      TIM14-CH1.p => stm.PA[7]
     
     pcb-bundle TIM15-CH1 :
       pin p
@@ -1096,27 +1096,27 @@ public defn STM32H723VGT6-supports () :
       pin p
     
     supports TIM15-CH1 :
-      TIM15-CH1.p => self.PE[5]
+      TIM15-CH1.p => stm.PE[5]
     supports TIM15-CH1 :
-      TIM15-CH1.p => self.PA[2]
+      TIM15-CH1.p => stm.PA[2]
     supports TIM15-CH1 :
-      TIM15-CH1.p => self.PC[12]
+      TIM15-CH1.p => stm.PC[12]
     supports TIM15-CH2 :
-      TIM15-CH2.p => self.PE[6]
+      TIM15-CH2.p => stm.PE[6]
     supports TIM15-CH2 :
-      TIM15-CH2.p => self.PA[13]
+      TIM15-CH2.p => stm.PA[13]
 
     pcb-bundle TIM16-CH1 :
       pin p
     
     supports TIM16-CH1 :
-      TIM16-CH1.p => self.PB[8]
+      TIM16-CH1.p => stm.PB[8]
 
     pcb-bundle TIM17-CH1 :
       pin p
     
     supports TIM17-CH1 :
-      TIM17-CH1.p => self.PB[9]
+      TIM17-CH1.p => stm.PB[9]
 
     ; TIM1
     ; TIM2

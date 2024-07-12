@@ -7,7 +7,7 @@ defpackage main :
   import jsl/examples/protocols/common/example-board
 
 pcb-module main :
-  inst c : stmicro/components/STM32H723VGT6/component
+  inst c : stmicro/components/STM32H723VGT6/module
 
 setup-board()
 set-main-module(main)
