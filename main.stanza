@@ -1,0 +1,14 @@
+#use-added-syntax(jitx)
+defpackage main :
+  import core
+  import jitx
+  import jitx/commands
+
+  import jsl/examples/protocols/common/example-board
+
+pcb-module main :
+  inst c : stmicro/components/STM32H723VGT6/component
+
+setup-board()
+set-main-module(main)
+view-schematic()
