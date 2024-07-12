@@ -5,9 +5,11 @@ defpackage stmicro/components/STM32H723VGT6 :
   import core
   import jitx
   import jitx/commands
+  import jitx/parts/query-api
 
   import jsl/landpatterns
   import jsl/symbols
+  import jsl/bundles
 
   import stmicro/components/STM32H723VGT6-supports
 
@@ -54,6 +56,7 @@ public pcb-component component :
   property(self.stm32-mfg-package) = "LQFP-100(14x14)"
   property(self.rated-temperature) = min-max(-40.0, 105.0)
 
+  ; TODO: pin models
   pin-properties :
     [pin:Ref | pads:Int ... | side:Dir | bank:Ref | stm32-pin-name:String ]
     [ PE[2]          |   1 | Right | IO-E   | "PE2"            ] ;| I/O | FT  | -      | TRACECLK, SAI1_CK1, USART10_RX, SPI4_SCK, SAI1_MCLK_A, SAI4_MCLK_A, OCTOSPIM_P1_IO2, SAI4_CK1, ETH_MII_TXD3, FMC_A23, EVENTOUT | -
@@ -186,12 +189,93 @@ public pcb-component component :
   property(self.case) = "LQFP-100(14x14)"
   property(self.mounting) = "smd"
 
-  ;STM32H723VGT6-supports()
+; copy/pasted from ethernet-io-lib
+; TODO: be smarter
+defn get-rail-voltage (p:JITXObject, -- def-V:Double, margin:Double) -> Double :
+  ; TODO determine the communication interface here 
+  ;  Ideally - we are placing a property on the voltage rail pin 
+  ;  and using that to communicate somehow.
+  def-V * margin
 
+; Margin Relative to the intended voltage.
+; TODO: figure out what this should be
+val cap-margin = 2.0
 
 public pcb-module module :
+
+  ; TODO: power rails
+  ; each one gets a bulk cap
+  port rail-VDD : power
+  port rail-VDDA : power
+  port rail-VBAT : power     ; might not need a bulk cap
+
+  net GND (rail-VDD.V-, rail-VDDA.V-, rail-VBAT.V-)
+
   inst stm : component
+
+  net (GND, stm.VSSA, stm.VSS[0], stm.VSS[1], stm.VSS[2], stm.VSS[3], stm.VSS[4])
+
+  ;==================================================
+  ;== Define supports 
+  ;==================================================
+
+  ; generate supports
   STM32H723VGT6-supports(stm)
+
+  defn TODO () : fatal("TODO")
+
+  ;==================================================
+  ;== Insert decoupling capacitors
+  ;==================================================
+
+  ; Add a decoupling cap
+  ; TODO: schematic groups
+  defn decouple (v, g, voltage:Double) :
+    val c = insert-capacitor(
+      v, g,
+      short-trace? = true ; TODO: is this OK?
+      capacitance = 1.0e-9
+      rated-voltage = AtLeast(voltage)
+    )
+    false
+  defn bulk-decouple (v, g, voltage:Double) :
+    val c = insert-capacitor(
+      v, g,
+      short-trace? = true ; TODO: is this OK?
+      capacitance = 22.0e-6
+      rated-voltage = AtLeast(voltage)
+      esr = AtMost(1.0) ; TODO: idk what this means
+    )
+    false
+
+
+
+  ; rail-VDD
+  val VDD-voltage = get-rail-voltage(rail-VDD, def-V = 3.3, margin = cap-margin)
+  val VDD-pins = [stm.VDD[0], stm.VDD[1], stm.VDD[2], stm.VDD[3]]
+  val VSS-pins = [stm.VSS[0], stm.VSS[1], stm.VSS[2], stm.VSS[3]]
+  for (v in VDD-pins, g in VSS-pins) do : decouple(v, g, VDD-voltage)
+  ; TODO: is the GND pin OK?
+  bulk-decouple(stm.VDD[0], stm.VSS[0], VDD-voltage)
+
+  ; rail-VDDA
+  val VDDA-voltage = get-rail-voltage(rail-VDDA, def-V = 3.3, margin = cap-margin)
+  decouple(stm.VDDA, stm.VSSA, VDDA-voltage)
+  bulk-decouple(stm.VDDA, stm.VSSA, VDDA-voltage)
+
+  ; rail-VBAT
+  ; no bulk decoupler
+  val BAT-voltage = get-rail-voltage(rail-VBAT, def-V = 3.3, margin = cap-margin)
+  ; TODO: is this GND pin ok?
+  decouple(stm.VBAT, stm.VSS[0], BAT-voltage)
+
+
+
+
+
+
+  
+
 ;  pin GND
 ;  pin VDD
 ;  pin BOOT

@@ -7,6 +7,8 @@ defpackage stmicro/components/STM32H723VGT6-supports :
   import jitx/commands
 
   import jsl/bundles
+  import jsl/protocols/ethernet/MII/RMII
+
   import stmicro/components/api
   import stmicro/bundles
 
@@ -1097,6 +1099,19 @@ public defn STM32H723VGT6-supports (stm) :
     supports TIM17-CH1 :
       TIM17-CH1.p => stm.PB[9]
 
+    ; Ethernet support (no rx error)
+    val eth = rmii(false)
+    supports eth :
+      eth.ref-clk => stm.PA[1]
+      eth.crs-dv => stm.PA[7]
+      eth.tx-en => stm.PB[11]
+
+      eth.rxd[0] => stm.PC[4]
+      eth.rxd[1] => stm.PC[5]
+
+      eth.txd[0] => stm.PB[12]
+      eth.txd[1] => stm.PB[13]
+
     ; TIM1
     ; TIM2
     ; TIM3
@@ -1135,3 +1150,4 @@ public defn STM32H723VGT6-supports (stm) :
         supports pwm :
           require r : o
           pwm.pwm => r.p
+
