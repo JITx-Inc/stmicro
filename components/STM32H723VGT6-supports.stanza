@@ -1,0 +1,1158 @@
+; This file is generated based on the parts database query below:")
+;   database-part(["manufacturer" => "STMICROELECTRONICS", "mpn" => "STM32H723VGT6"])
+#use-added-syntax(jitx)
+defpackage stmicro/components/STM32H723VGT6-supports :
+  import core
+  import jitx
+  import jitx/commands
+
+  import jsl/bundles
+
+;  import bundles with:
+;    only => (pwm, boot-uart)
+;    ; prefix => local-
+
+public pcb-bundle pwm :
+  pin pwm
+
+public defn STM32H723VGT6-supports () :
+  inside pcb-component :
+
+    pcb-bundle SWD_SWDIO:
+      pin p
+    pcb-bundle SWD_SWDCLK:
+      pin p
+
+    supports SWD_SWDIO:
+      SWD_SWDIO.p => self.PA[13]
+    supports SWD_SWDCLK:
+      SWD_SWDCLK.p => self.PA[14]
+
+    supports swd() :
+      require swdio : SWD_SWDIO
+      require swdclk : SWD_SWDCLK
+      swd().swdio  => swdio.p
+      swd().swdclk => swdclk.p
+      property(swdio.p.stm32-signal-name) = "SYS_JTMS-SWDIO"
+      property(swdclk.p.stm32-signal-name) = "SYS_JTCK-SWCLK"
+      ; TODO
+      ;property(swdio.p.stm32-pin-mode)  = STMSerialWireDebugMode
+      ;property(swdclk.p.stm32-pin-mode) = STMSerialWireDebugMode
+
+    supports reset:
+      reset.reset => self.NRST
+
+    ; ; does not account for P/N differential ADC inputs 
+    val ADC123-LIST = [self.PC[0] self.PC[1]]
+    val ADC12-LIST = [self.PA[2] self.PA[3] self.PA[4] self.PA[5] self.PA[6] self.PA[7] self.PB[0] self.PB[1]  self.PC[4] self.PC[5]]
+    val ADC1-LIST = [self.PA[0] self.PA[1]]
+    val ADC3-LIST = [self.PC[2] self.PC[3]]
+
+    for (p in ADC123-LIST, i in 0 to false) do :
+      supports adc:
+        adc.adc => p
+    for (p in ADC12-LIST, i in 0 to false) do :
+      supports adc:
+        adc.adc => p
+    for (p in ADC1-LIST, i in 0 to false) do :
+      supports adc:
+        adc.adc => p
+    for (p in ADC3-LIST, i in 0 to false) do :
+      supports adc:
+        adc.adc => p
+        ; property(p.stm32-signal-name) = to-string("ADCx_IN%_" % [i])
+        ; property(p.stm32-ip-name) = STMADC1IP
+        ; ;property(swdio.p.stm32-ip-name) = STMADC2IP
+
+    for p in pins(self.PA) do:
+      supports gpio :
+        gpio.gpio => p
+        property(p.stm32-signal-name) = "GPIO"
+      
+    for p in pins(self.PB) do:
+      supports gpio :
+        gpio.gpio => p
+        property(p.stm32-signal-name) = "GPIO"
+
+    for p in pins(self.PC) do:
+      supports gpio :
+        gpio.gpio => p
+        property(p.stm32-signal-name) = "GPIO"      
+
+    for p in pins(self.PD) do:
+      supports gpio :
+        gpio.gpio => p
+        property(p.stm32-signal-name) = "GPIO"      
+
+    for p in pins(self.PE) do:
+      supports gpio :
+        gpio.gpio => p
+        property(p.stm32-signal-name) = "GPIO"      
+
+    pcb-bundle RCC_OSC_IN:
+      pin p
+    pcb-bundle RCC_OSC_OUT:
+      pin p
+
+    supports RCC_OSC_IN:
+      RCC_OSC_IN.p => self.PH[0]
+    supports RCC_OSC_OUT:
+      RCC_OSC_OUT.p => self.PH[1]
+    
+    ; TODO
+    ;supports high-freq-oscillator:
+    ;  require in-pin: RCC_OSC_IN
+    ;  require out-pin: RCC_OSC_OUT
+    ;  high-freq-oscillator.in => in-pin.p
+    ;  high-freq-oscillator.out => out-pin.p
+    ;  property(in-pin.p.stm32-signal-name) = "RCC_OSC_IN"
+    ;  property(out-pin.p.stm32-signal-name) = "RCC_OSC_OUT"
+    ;  property(in-pin.p.stm32-pin-mode) = STMHSEExternalMode
+    ;  property(out-pin.p.stm32-pin-mode) = STMHSEExternalMode
+    ;  property(in-pin.p.stm32-pin-locked) = true
+    ;  property(out-pin.p.stm32-pin-locked) = true
+
+
+    pcb-bundle RCC_OSC32_IN:
+      pin p
+    pcb-bundle RCC_OSC32_OUT:
+      pin p
+
+    supports RCC_OSC32_IN:
+      RCC_OSC32_IN.p => self.PC[14]
+    supports RCC_OSC32_OUT:
+      RCC_OSC32_OUT.p => self.PC[15]
+    
+    ; TODO
+    ;supports low-freq-oscillator:
+    ;  require in-pin: RCC_OSC32_IN
+    ;  require out-pin: RCC_OSC32_OUT
+    ;  low-freq-oscillator.in => in-pin.p
+    ;  low-freq-oscillator.out => out-pin.p
+    ;  property(in-pin.p.stm32-signal-name) = "RCC_OSC32_IN"
+    ;  property(out-pin.p.stm32-signal-name) = "RCC_OSC32_OUT"
+    ;  property(in-pin.p.stm32-pin-mode) = STMLSEExternalMode
+    ;  property(out-pin.p.stm32-pin-mode) = STMLSEExternalMode
+    ;  property(in-pin.p.stm32-pin-locked) = true
+    ;  property(out-pin.p.stm32-pin-locked) = true
+    ;  property(in-pin.p.stm32-ip-name) = STMRTCIP
+    ;  property(out-pin.p.stm32-ip-name) = STMRTCIP
+
+    pcb-bundle USART1_TX:
+      pin p
+    pcb-bundle USART1_RX:
+      pin p
+    pcb-bundle USART1_RTS:
+      pin p
+    pcb-bundle USART1_CTS:
+      pin p
+    pcb-bundle USART1_CK:
+      pin p
+    pcb-bundle USART1_NSS:
+      pin p
+    pcb-bundle USART1_DE:
+      pin p
+
+    supports USART1_TX:
+      USART1_TX.p => self.PA[9]
+    supports USART1_TX:
+      USART1_TX.p => self.PB[6]
+    supports USART1_TX:
+      USART1_TX.p => self.PB[14]
+
+    supports USART1_RX:
+      USART1_RX.p => self.PB[15]
+    supports USART1_RX:
+      USART1_RX.p => self.PA[10]
+    supports USART1_RX:
+      USART1_RX.p => self.PB[7]
+      
+    supports USART1_RTS:
+      USART1_RTS.p => self.PA[12]
+    supports USART1_CTS:
+      USART1_CTS.p => self.PA[11]
+    supports USART1_CK:
+      USART1_CK.p => self.PA[8]
+
+    supports uart():
+      require tx-pin: USART1_TX
+      require rx-pin: USART1_RX
+      uart().tx => tx-pin.p
+      uart().rx => rx-pin.p
+      property(tx-pin.p.stm32-signal-name) = "USART1_TX"
+      property(rx-pin.p.stm32-signal-name) = "USART1_RX"
+      ; TODO
+      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(tx-pin.p.stm32-pin-locked) = true
+      ; property(rx-pin.p.stm32-pin-locked) = true
+      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
+
+    val uart-fc = uart(UART-RX, UART-TX, UART-RTS, UART-CTS)
+    supports uart-fc :
+      require tx-pin: USART1_TX
+      require rx-pin: USART1_RX
+      require rts-pin: USART1_RTS
+      require cts-pin: USART1_CTS
+      uart-fc.tx => tx-pin.p
+      uart-fc.rx => rx-pin.p
+      uart-fc.rts => rts-pin.p
+      uart-fc.cts => cts-pin.p
+      ; TODO
+      ; property(tx-pin.p.stm32-signal-name) = "USART1_TX"
+      ; property(rx-pin.p.stm32-signal-name) = "USART1_RX"
+      ; property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
+      ; property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
+      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(tx-pin.p.stm32-pin-locked) = true
+      ; property(rx-pin.p.stm32-pin-locked) = true
+      ; property(rts-pin.p.stm32-pin-locked) = true
+      ; property(cts-pin.p.stm32-pin-locked) = true
+      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rts-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(cts-pin.p.stm32-ip-name) = STMUSART1IP
+
+    val uart-fc-ck = uart(UART-RX, UART-TX, UART-RTS, UART-CTS, UART-CK)
+
+    supports uart-fc-ck :
+      require tx-pin: USART1_TX
+      require rx-pin: USART1_RX
+      require rts-pin: USART1_RTS
+      require cts-pin: USART1_CTS
+      require ck-pin: USART1_CK
+      uart-fc-ck.tx => tx-pin.p
+      uart-fc-ck.rx => rx-pin.p
+      uart-fc-ck.rts => rts-pin.p
+      uart-fc-ck.cts => cts-pin.p
+      uart-fc-ck.ck => ck-pin.p
+      ; TODO
+      ; property(tx-pin.p.stm32-signal-name) = "USART1_TX"
+      ; property(rx-pin.p.stm32-signal-name) = "USART1_RX"
+      ; property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
+      ; property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
+      ; property(ck-pin.p.stm32-signal-name) = "USART1_CK"
+      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(ck-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(tx-pin.p.stm32-pin-locked) = true
+      ; property(rx-pin.p.stm32-pin-locked) = true
+      ; property(rts-pin.p.stm32-pin-locked) = true
+      ; property(cts-pin.p.stm32-pin-locked) = true
+      ; property(ck-pin.p.stm32-pin-locked) = true
+      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rts-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(cts-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(ck-pin.p.stm32-ip-name) = STMUSART1IP
+
+    pcb-bundle USART2_TX:
+      pin p
+    pcb-bundle USART2_RX:
+      pin p
+    pcb-bundle USART2_RTS:
+      pin p
+    pcb-bundle USART2_CTS:
+      pin p
+    pcb-bundle USART2_CK:
+      pin p
+    pcb-bundle USART2_NSS:
+      pin p
+    pcb-bundle USART2_DE:
+      pin p
+
+    supports USART2_TX:
+      USART2_TX.p => self.PA[2]
+    supports USART2_TX:
+      USART2_TX.p => self.PD[5]
+
+    supports USART2_RX:
+      USART2_RX.p => self.PA[3]
+    supports USART2_RX:
+      USART2_RX.p => self.PD[6]
+
+    supports USART2_RTS:
+      USART2_RTS.p => self.PA[1]
+    supports USART2_RTS:
+      USART2_RTS.p => self.PD[4]
+      
+    supports USART2_CTS:
+      USART2_CTS.p => self.PA[0]
+    supports USART2_CTS:
+      USART2_CTS.p => self.PD[3]
+
+    supports USART2_CK:
+      USART2_CK.p => self.PA[4]
+    supports USART2_CK:
+      USART2_CK.p => self.PD[7]
+
+    supports uart():
+      require tx-pin: USART2_TX
+      require rx-pin: USART2_RX
+      uart().tx => tx-pin.p
+      uart().rx => rx-pin.p
+      ; TODO
+      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(tx-pin.p.stm32-signal-name) = "USART2_TX"
+      ; property(rx-pin.p.stm32-signal-name) = "USART2_RX"
+      ; property(tx-pin.p.stm32-ip-name) = STMUSART2IP
+      ; property(rx-pin.p.stm32-ip-name) = STMUSART2IP
+
+    property(self.PA[2].SUPPORTS-BOOT) = true
+    property(self.PA[3].SUPPORTS-BOOT) = true
+
+    supports uart(UART-RX, UART-TX, UART-RTS, UART-CTS):
+      require tx-pin: USART2_TX
+      require rx-pin: USART2_RX
+      require rts-pin: USART2_RTS
+      require cts-pin: USART2_CTS
+      uart(UART-RX, UART-TX, UART-RTS, UART-CTS).tx => tx-pin.p
+      uart(UART-RX, UART-TX, UART-RTS, UART-CTS).rx => rx-pin.p
+      uart(UART-RX, UART-TX, UART-RTS, UART-CTS).rts => rts-pin.p
+      uart(UART-RX, UART-TX, UART-RTS, UART-CTS).cts => cts-pin.p
+
+    supports uart-fc-ck :
+      require tx-pin: USART2_TX
+      require rx-pin: USART2_RX
+      require rts-pin: USART2_RTS
+      require cts-pin: USART2_CTS
+      require ck-pin: USART2_CK
+      uart-fc-ck.tx => tx-pin.p
+      uart-fc-ck.rx => rx-pin.p
+      uart-fc-ck.rts => rts-pin.p
+      uart-fc-ck.cts => cts-pin.p
+      uart-fc-ck.ck => ck-pin.p
+
+    ; USART10
+    ; USART3
+    ; USART6
+    ; 
+    ; UART8
+    ; UART4
+    ; LPUART1
+    ; UART5
+    ; UART7
+    ; UART9
+    ; 
+
+    pcb-bundle I2C1_SCL:
+      pin p
+    pcb-bundle I2C1_SDA:
+      pin p
+
+    supports I2C1_SCL:
+      I2C1_SCL.p => self.PB[6] ; boot
+    supports I2C1_SCL:
+      I2C1_SCL.p => self.PB[8]
+    supports I2C1_SDA:
+      I2C1_SDA.p => self.PB[7]
+    supports I2C1_SDA:
+      I2C1_SDA.p => self.PB[9]
+
+    supports i2c:
+      require scl-pin: I2C1_SCL
+      require sda-pin: I2C1_SDA
+      i2c.scl => scl-pin.p
+      i2c.sda => sda-pin.p
+      ; property(scl-pin.p.stm32-signal-name) = "I2C1_SCL"
+      ; property(sda-pin.p.stm32-signal-name) = "I2C1_SDA"
+      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(scl-pin.p.stm32-ip-name) = STMI2C1IP
+      ; property(sda-pin.p.stm32-ip-name) = STMI2C1IP
+
+    pcb-bundle I2C2_SCL:
+      pin p
+    pcb-bundle I2C2_SDA:
+      pin p
+
+    supports I2C2_SCL:
+      I2C2_SCL.p => self.PB[10]
+    supports I2C2_SDA:
+      I2C2_SDA.p => self.PB[11]
+
+    supports i2c:
+      require scl-pin: I2C2_SCL
+      require sda-pin: I2C2_SDA
+      i2c.scl => scl-pin.p
+      i2c.sda => sda-pin.p
+      ; property(scl-pin.p.stm32-signal-name) = "I2C2_SCL"
+      ; property(sda-pin.p.stm32-signal-name) = "I2C2_SDA"
+      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(scl-pin.p.stm32-ip-name) = STMI2C2IP
+      ; property(sda-pin.p.stm32-ip-name) = STMI2C2IP
+
+
+    pcb-bundle I2C3_SCL:
+      pin p
+    pcb-bundle I2C3_SDA:
+      pin p
+
+    supports I2C3_SCL:
+      I2C3_SCL.p => self.PA[8]
+    supports I2C3_SDA:
+      I2C3_SDA.p => self.PC[9]
+
+    supports i2c:
+      require scl-pin: I2C3_SCL
+      require sda-pin: I2C3_SDA
+      i2c.scl => scl-pin.p
+      i2c.sda => sda-pin.p
+      ; property(scl-pin.p.stm32-signal-name) = "I2C3_SCL"
+      ; property(sda-pin.p.stm32-signal-name) = "I2C3_SDA"
+      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(scl-pin.p.stm32-ip-name) = STMI2C3IP
+      ; property(sda-pin.p.stm32-ip-name) = STMI2C3IP
+
+    pcb-bundle I2C4_SCL:
+      pin p
+    pcb-bundle I2C4_SDA:
+      pin p
+
+    supports I2C4_SCL:
+      I2C4_SCL.p => self.PD[12]
+    supports I2C4_SCL:
+      I2C4_SCL.p => self.PB[6]
+    supports I2C4_SCL:
+      I2C4_SCL.p => self.PB[8]
+    supports I2C4_SDA:
+      I2C4_SDA.p => self.PD[13]
+    supports I2C4_SDA:
+      I2C4_SDA.p => self.PB[7]
+    supports I2C4_SDA:
+      I2C4_SDA.p => self.PB[9]
+      
+
+    supports i2c:
+      require scl-pin: I2C4_SCL
+      require sda-pin: I2C4_SDA
+      i2c.scl => scl-pin.p
+      i2c.sda => sda-pin.p
+      ; property(scl-pin.p.stm32-signal-name) = "I2C4_SCL"
+      ; property(sda-pin.p.stm32-signal-name) = "I2C4_SDA"
+      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(scl-pin.p.stm32-ip-name) = STMI2C4IP
+      ; property(sda-pin.p.stm32-ip-name) = STMI2C4IP
+
+    pcb-bundle I2C5_SCL:
+      pin p
+    pcb-bundle I2C5_SDA:
+      pin p
+
+    supports I2C5_SCL:
+      I2C5_SCL.p => self.PA[8]
+    supports I2C5_SCL:
+      I2C5_SCL.p => self.PC[11]
+    supports I2C5_SDA:
+      I2C5_SDA.p => self.PC[10]
+    supports I2C5_SDA:
+      I2C5_SDA.p => self.PC[9]
+      
+    supports i2c:
+      require scl-pin: I2C5_SCL
+      require sda-pin: I2C5_SDA
+      i2c.scl => scl-pin.p
+      i2c.sda => sda-pin.p
+      ; property(scl-pin.p.stm32-signal-name) = "I2C5_SCL"
+      ; property(sda-pin.p.stm32-signal-name) = "I2C5_SDA"
+      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(scl-pin.p.stm32-ip-name) = STMI2C5IP
+      ; property(sda-pin.p.stm32-ip-name) = STMI2C5IP
+
+    pcb-bundle SPI1_MOSI:
+      pin p
+    pcb-bundle SPI1_MISO:
+      pin p
+    pcb-bundle SPI1_SCK:
+      pin p
+    pcb-bundle SPI1_NSS:
+      pin p
+
+    supports SPI1_NSS:
+      SPI1_NSS.p => self.PA[4]
+    supports SPI1_NSS:
+      SPI1_NSS.p => self.PA[15]
+    supports SPI1_SCK:
+      SPI1_SCK.p => self.PA[5]
+    supports SPI1_SCK:
+      SPI1_SCK.p => self.PB[3]
+    supports SPI1_MOSI:
+      SPI1_MOSI.p => self.PA[7]
+    supports SPI1_MOSI:
+      SPI1_MOSI.p => self.PD[7]
+    supports SPI1_MOSI:
+      SPI1_MOSI.p => self.PB[5]
+    supports SPI1_MISO:
+      SPI1_MISO.p => self.PA[6]
+    supports SPI1_MISO:
+      SPI1_MISO.p => self.PB[4]
+
+    property(self.PA[4].SUPPORTS-BOOT) = true
+    property(self.PA[5].SUPPORTS-BOOT) = true
+    property(self.PA[6].SUPPORTS-BOOT) = true
+    property(self.PA[7].SUPPORTS-BOOT) = true
+
+    ; TODO
+    ;supports spi-controller():
+    ;  require sdo-pin: SPI1_MOSI
+    ;  require sdi-pin: SPI1_MISO
+    ;  require sck-pin: SPI1_SCK
+    ;  require cs-pin: SPI1_NSS ; how to make this optional?
+    ;  spi-controller().cipo => sdo-pin.p
+    ;  spi-controller().copi => sdi-pin.p
+    ;  spi-controller().sck => sck-pin.p
+    ;  spi-controller().cs => cs-pin.p
+
+      ; property(sdo-pin.p.stm32-signal-name) = "SPI1_MOSI"
+      ; property(sdi-pin.p.stm32-signal-name) = "SPI1_MISO"
+      ; property(sck-pin.p.stm32-signal-name) = "SPI1_SCK"
+      ; property(cs-pin.p.stm32-signal-name) = "SPI1_NSS"
+      ; property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sck-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(cs-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdo-pin.p.stm32-ip-name) = STMSPI1IP
+      ; property(sdi-pin.p.stm32-ip-name) = STMSPI1IP
+      ; property(sck-pin.p.stm32-ip-name) = STMSPI1IP
+      ; property(cs-pin.p.stm32-ip-name) = STMSPI1IP
+
+    pcb-bundle SPI2_MOSI:
+      pin p
+    pcb-bundle SPI2_MISO:
+      pin p
+    pcb-bundle SPI2_SCK:
+      pin p
+    pcb-bundle SPI2_NSS:
+      pin p
+
+    supports SPI2_NSS:
+      SPI2_NSS.p => self.PB[12]
+    supports SPI2_NSS:
+      SPI2_NSS.p => self.PA[11]
+    supports SPI2_NSS:
+      SPI2_NSS.p => self.PB[4]
+    supports SPI2_NSS:
+      SPI2_NSS.p => self.PB[9]
+    supports SPI2_SCK:
+      SPI2_SCK.p => self.PB[10]
+    supports SPI2_SCK:
+      SPI2_SCK.p => self.PB[13]
+    supports SPI2_SCK:
+      SPI2_SCK.p => self.PA[9]
+    supports SPI2_SCK:
+      SPI2_SCK.p => self.PA[12]
+    supports SPI2_SCK:
+      SPI2_SCK.p => self.PD[3]
+    supports SPI2_MOSI:
+      SPI2_MOSI.p => self.PC[1]
+    supports SPI2_MOSI:
+      SPI2_MOSI.p => self.PB[15]
+    supports SPI2_MISO:
+      SPI2_MISO.p => self.PB[14]
+    
+    ; TODO
+    ;supports spi-controller():
+    ;  require sdo-pin: SPI2_MOSI
+    ;  require sdi-pin: SPI2_MISO
+    ;  require sck-pin: SPI2_SCK
+    ;  require cs-pin: SPI2_NSS ; how to make this optional?
+    ;  spi-controller().cipo => sdo-pin.p
+    ;  spi-controller().copi => sdi-pin.p
+    ;  spi-controller().sck => sck-pin.p
+    ;  spi-controller().cs => cs-pin.p
+      ; property(sdo-pin.p.stm32-signal-name) = "SPI2_MOSI"
+      ; property(sdi-pin.p.stm32-signal-name) = "SPI2_MISO"
+      ; property(sck-pin.p.stm32-signal-name) = "SPI2_SCK"
+      ; property(cs-pin.p.stm32-signal-name) = "SPI2_NSS"
+      ; property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sck-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(cs-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdo-pin.p.stm32-ip-name) = STMSPI2IP
+      ; property(sdi-pin.p.stm32-ip-name) = STMSPI2IP
+      ; property(sck-pin.p.stm32-ip-name) = STMSPI2IP
+      ; property(cs-pin.p.stm32-ip-name) = STMSPI2IP
+      ; ;property(cs-pin.p.pin-mode) = "NSS_Signal_Hard_Output"
+
+    pcb-bundle SPI3_MOSI:
+      pin p
+    pcb-bundle SPI3_MISO:
+      pin p
+    pcb-bundle SPI3_SCK:
+      pin p
+    pcb-bundle SPI3_NSS:
+      pin p
+
+    supports SPI3_NSS:
+      SPI3_NSS.p => self.PA[4]
+    supports SPI3_NSS:
+      SPI3_NSS.p => self.PA[15]
+    supports SPI3_SCK:
+      SPI3_SCK.p => self.PC[10]
+    supports SPI3_SCK:
+      SPI3_SCK.p => self.PB[3]
+    supports SPI3_MOSI:
+      SPI3_MOSI.p => self.PB[2]
+    supports SPI3_MOSI:
+      SPI3_MOSI.p => self.PC[12]
+    supports SPI3_MOSI:
+      SPI3_MOSI.p => self.PD[6]
+    supports SPI3_MOSI:
+      SPI3_MOSI.p => self.PB[5]
+    supports SPI3_MISO:
+      SPI3_MISO.p => self.PC[11]
+    supports SPI3_MISO:
+      SPI3_MISO.p => self.PB[4]
+
+    ;supports spi-controller():
+    ;  require sdo-pin: SPI3_MOSI
+    ;  require sdi-pin: SPI3_MISO
+    ;  require sck-pin: SPI3_SCK
+    ;  require cs-pin: SPI3_NSS ; how to make this optional?
+    ;  spi-controller().cipo => sdo-pin.p
+    ;  spi-controller().copi => sdi-pin.p
+    ;  spi-controller().sck => sck-pin.p
+    ;  spi-controller().cs => cs-pin.p
+
+    pcb-bundle SPI4_MOSI:
+      pin p
+    pcb-bundle SPI4_MISO:
+      pin p
+    pcb-bundle SPI4_SCK:
+      pin p
+    pcb-bundle SPI4_NSS:
+      pin p
+
+    supports SPI4_NSS:
+      SPI4_NSS.p => self.PE[4]
+    supports SPI4_NSS:
+      SPI4_NSS.p => self.PE[11]
+    supports SPI4_SCK:
+      SPI4_SCK.p => self.PE[2]
+    supports SPI4_SCK:
+      SPI4_SCK.p => self.PE[12]
+    supports SPI4_MOSI:
+      SPI4_MOSI.p => self.PE[6]
+    supports SPI4_MOSI:
+      SPI4_MOSI.p => self.PE[14]
+    supports SPI4_MISO:
+      SPI4_MISO.p => self.PE[15]
+    supports SPI4_MISO:
+      SPI4_MISO.p => self.PE[13]
+
+    property(self.PE[11].SUPPORTS-BOOT) = true
+    property(self.PE[12].SUPPORTS-BOOT) = true
+    property(self.PE[13].SUPPORTS-BOOT) = true
+    property(self.PE[14].SUPPORTS-BOOT) = true
+
+    ; TODO
+    ;supports spi-controller():
+    ;  require sdo-pin: SPI4_MOSI
+    ;  require sdi-pin: SPI4_MISO
+    ;  require sck-pin: SPI4_SCK
+    ;  require cs-pin: SPI4_NSS ; how to make this optional?
+    ;  spi-controller().cipo => sdo-pin.p
+    ;  spi-controller().copi => sdi-pin.p
+    ;  spi-controller().sck => sck-pin.p
+    ;  spi-controller().cs => cs-pin.p
+
+    pcb-bundle SPI6_MOSI:
+      pin p
+    pcb-bundle SPI6_MISO:
+      pin p
+    pcb-bundle SPI6_SCK:
+      pin p
+    pcb-bundle SPI6_NSS:
+      pin p
+
+    supports SPI6_NSS:
+      SPI6_NSS.p => self.PA[0]
+    supports SPI6_NSS:
+      SPI6_NSS.p => self.PA[4]
+    supports SPI6_NSS:
+      SPI6_NSS.p => self.PA[15]
+    supports SPI6_SCK:
+      SPI6_SCK.p => self.PA[5]
+    supports SPI6_SCK:
+      SPI6_SCK.p => self.PC[12]
+    supports SPI6_SCK:
+      SPI6_SCK.p => self.PB[3]
+    supports SPI6_MOSI:
+      SPI6_MOSI.p => self.PA[7]
+    supports SPI6_MOSI:
+      SPI6_MOSI.p => self.PB[5]
+    supports SPI6_MISO:
+      SPI6_MISO.p => self.PA[6]
+    supports SPI6_MISO:
+      SPI6_MISO.p => self.PB[4]
+    
+    ; TODO
+    ;supports spi-controller():
+    ;  require sdo-pin: SPI6_MOSI
+    ;  require sdi-pin: SPI6_MISO
+    ;  require sck-pin: SPI6_SCK
+    ;  require cs-pin: SPI6_NSS ; how to make this optional?
+    ;  spi-controller().cipo => sdo-pin.p
+    ;  spi-controller().copi => sdi-pin.p
+    ;  spi-controller().sck => sck-pin.p
+    ;  spi-controller().cs => cs-pin.p
+
+    pcb-bundle I2S1-CK :
+      pin p
+    pcb-bundle I2S1-SDI :
+      pin p
+    pcb-bundle I2S1-SDO :
+      pin p
+    pcb-bundle I2S1-WS :
+      pin p
+    ; TODO: find this bundle
+    ;pcb-bundle I2S1-MCK :
+    ;  pin p
+
+    supports I2S1-CK :
+      I2S1-CK.p => self.PA[5]
+    supports I2S1-CK :
+      I2S1-CK.p => self.PB[3]
+    supports I2S1-SDI :
+      I2S1-SDI.p => self.PA[6]
+    supports I2S1-SDI :
+      I2S1-SDI.p => self.PB[4]
+    supports I2S1-SDO :
+      I2S1-SDO.p => self.PA[7]
+    supports I2S1-SDO :
+      I2S1-SDO.p => self.PD[7]
+    supports I2S1-SDO :
+      I2S1-SDO.p => self.PB[5]
+    supports I2S1-WS :
+      I2S1-WS.p => self.PA[4]
+    supports I2S1-WS :
+      I2S1-WS.p => self.PA[15]
+    ; TODO: find this
+    ;supports I2S1-MCK :
+    ;  I2S1-MCK.p => self.PC[4]
+    
+    ; TODO: find this
+    ;val i2s-io = i2s([I2S-MCK I2S-SDMI])
+
+    ; TODO
+    ;supports i2s-io :
+    ;  require ck : I2S1-CK
+    ;  require ws : I2S1-WS
+    ;  require sdi : I2S1-SDI
+    ;  require sdo : I2S1-SDO
+    ;  require mck : I2S1-MCK
+    ;  i2s-io.ck => ck.p
+    ;  i2s-io.ws => ws.p
+    ;  i2s-io.sdmo => sdi.p
+    ;  i2s-io.sdmi => sdo.p
+    ;  i2s-io.mck => mck.p
+      
+    pcb-bundle I2S2-CK :
+      pin p
+    pcb-bundle I2S2-SDI :
+      pin p
+    pcb-bundle I2S2-SDO :
+      pin p
+    pcb-bundle I2S2-WS :
+      pin p
+    pcb-bundle I2S2-MCK :
+      pin p
+
+    supports I2S2-CK :
+      I2S2-CK.p => self.PB[10]
+    supports I2S2-CK :
+      I2S2-CK.p => self.PB[13]
+    supports I2S2-CK :
+      I2S2-CK.p => self.PA[9]
+    supports I2S2-CK :
+      I2S2-CK.p => self.PA[12]
+    supports I2S2-CK :
+      I2S2-CK.p => self.PD[3]
+    supports I2S2-SDI :
+      I2S2-SDI.p => self.PB[14]
+    supports I2S2-SDO :
+      I2S2-SDO.p => self.PC[1]
+    supports I2S2-SDO :
+      I2S2-SDO.p => self.PB[15]
+    supports I2S2-WS :
+      I2S2-WS.p => self.PB[12]
+    supports I2S2-WS :
+      I2S2-WS.p => self.PA[11]
+    supports I2S2-WS :
+      I2S2-WS.p => self.PB[4]
+    supports I2S2-WS :
+      I2S2-WS.p => self.PB[9]
+    supports I2S2-MCK :
+      I2S2-MCK.p => self.PC[6]
+    
+    ; TODO
+    ;supports i2s-io :
+    ;  require ck : I2S2-CK
+    ;  require ws : I2S2-WS
+    ;  require sdi : I2S2-SDI
+    ;  require sdo : I2S2-SDO
+    ;  require mck : I2S2-MCK
+    ;  i2s-io.ck => ck.p
+    ;  i2s-io.ws => ws.p
+    ;  i2s-io.sdmo => sdo.p
+    ;  i2s-io.sdmi => sdi.p
+    ;  i2s-io.mck => mck.p
+      
+
+    pcb-bundle I2S3-CK :
+      pin p
+    pcb-bundle I2S3-SDI :
+      pin p
+    pcb-bundle I2S3-SDO :
+      pin p
+    pcb-bundle I2S3-WS :
+      pin p
+    pcb-bundle I2S3-MCK :
+      pin p
+
+    supports I2S3-CK :
+      I2S3-CK.p => self.PC[10]
+    supports I2S3-CK :
+      I2S3-CK.p => self.PB[3]
+    supports I2S3-SDI :
+      I2S3-SDI.p => self.PC[11]
+    supports I2S3-SDI :
+      I2S3-SDI.p => self.PB[4]
+    supports I2S3-SDO :
+      I2S3-SDO.p => self.PB[2]
+    supports I2S3-SDO :
+      I2S3-SDO.p => self.PC[12]
+    supports I2S3-SDO :
+      I2S3-SDO.p => self.PD[6]
+    supports I2S3-SDO :
+      I2S3-SDO.p => self.PB[5]
+    supports I2S3-WS :
+      I2S3-WS.p => self.PA[4]
+    supports I2S3-WS :
+      I2S3-WS.p => self.PA[15]
+    supports I2S3-MCK :
+      I2S3-MCK.p => self.PC[7]
+    
+    ; TODO
+    ;supports i2s-io :
+    ;  require ck : I2S3-CK
+    ;  require ws : I2S3-WS
+    ;  require sdi : I2S3-SDI
+    ;  require sdo : I2S3-SDO
+    ;  require mck : I2S3-MCK
+    ;  i2s-io.ck => ck.p
+    ;  i2s-io.ws => ws.p
+    ;  i2s-io.sdmo => sdo.p
+    ;  i2s-io.sdmi => sdi.p
+    ;  i2s-io.mck => mck.p
+
+    pcb-bundle I2S6-CK :
+      pin p
+    pcb-bundle I2S6-SDI :
+      pin p
+    pcb-bundle I2S6-SDO :
+      pin p
+    pcb-bundle I2S6-WS :
+      pin p
+    pcb-bundle I2S6-MCK :
+      pin p
+
+    supports I2S6-CK :
+      I2S6-CK.p => self.PA[5]
+    supports I2S6-CK :
+      I2S6-CK.p => self.PC[12]
+    supports I2S6-CK :
+      I2S6-CK.p => self.PB[3]
+    supports I2S6-SDI :
+      I2S6-SDI.p => self.PA[6]
+    supports I2S6-SDI :
+      I2S6-SDI.p => self.PB[4]
+    supports I2S6-SDI :
+      I2S6-SDI.p => self.PA[6]
+    supports I2S6-SDO :
+      I2S6-SDO.p => self.PA[7]
+    supports I2S6-SDO :
+      I2S6-SDO.p => self.PB[5]
+    supports I2S6-WS :
+      I2S6-WS.p => self.PA[0]
+    supports I2S6-WS :
+      I2S6-WS.p => self.PA[4]
+    supports I2S6-WS :
+      I2S6-WS.p => self.PA[15]
+    ; TODO: find this
+    ;supports I2S6-MCK :
+    ;  I2S6-MCK.p => self.PA[3]
+    
+    ; TODO
+    ;supports i2s-io :
+    ;  require ck : I2S6-CK
+    ;  require ws : I2S6-WS
+    ;  require sdi : I2S6-SDI
+    ;  require sdo : I2S6-SDO
+    ;  require mck : I2S6-MCK
+    ;  i2s-io.ck => ck.p
+    ;  i2s-io.ws => ws.p
+    ;  i2s-io.sdmo => sdo.p
+    ;  i2s-io.sdmi => sdi.p
+    ;  i2s-io.mck => mck.p
+
+
+    pcb-bundle TIM1-CH1 :
+      pin p
+    pcb-bundle TIM1-CH2 :
+      pin p
+    pcb-bundle TIM1-CH3 :
+      pin p
+    pcb-bundle TIM1-CH4 :
+      pin p
+    
+    supports TIM1-CH1 :
+      TIM1-CH1.p => self.PE[9]
+    supports TIM1-CH1 :
+      TIM1-CH1.p => self.PA[8]
+    supports TIM1-CH2 :
+      TIM1-CH2.p => self.PE[11]
+    supports TIM1-CH2 :
+      TIM1-CH2.p => self.PA[9]
+    supports TIM1-CH3 :
+      TIM1-CH3.p => self.PE[13]
+    supports TIM1-CH3 :
+      TIM1-CH3.p => self.PA[10]
+    supports TIM1-CH4 :
+      TIM1-CH4.p => self.PE[14]
+    supports TIM1-CH4 :
+      TIM1-CH4.p => self.PA[11]
+    
+    
+    pcb-bundle TIM2-CH1 :
+      pin p
+    pcb-bundle TIM2-CH2 :
+      pin p
+    pcb-bundle TIM2-CH3 :
+      pin p
+    pcb-bundle TIM2-CH4 :
+      pin p
+    
+    supports TIM2-CH1 :
+      TIM2-CH1.p => self.PA[0]
+    supports TIM2-CH1 :
+      TIM2-CH1.p => self.PA[5]
+    supports TIM2-CH1 :
+      TIM2-CH1.p => self.PA[15]
+    supports TIM2-CH2 :
+      TIM2-CH2.p => self.PA[1]
+    supports TIM2-CH2 :
+      TIM2-CH2.p => self.PB[3]
+    supports TIM2-CH3 :
+      TIM2-CH3.p => self.PA[2]
+    supports TIM2-CH3 :
+      TIM2-CH3.p => self.PB[11]
+    supports TIM2-CH4 :
+      TIM2-CH4.p => self.PA[3]
+    
+    pcb-bundle TIM3-CH1 :
+      pin p
+    pcb-bundle TIM3-CH2 :
+      pin p
+    pcb-bundle TIM3-CH3 :
+      pin p
+    pcb-bundle TIM3-CH4 :
+      pin p
+    
+    supports TIM3-CH1 :
+      TIM3-CH1.p => self.PA[6]
+    supports TIM3-CH1 :
+      TIM3-CH1.p => self.PC[6]
+    supports TIM3-CH1 :
+      TIM3-CH1.p => self.PB[4]
+    supports TIM3-CH2 :
+      TIM3-CH2.p => self.PA[7]
+    supports TIM3-CH2 :
+      TIM3-CH2.p => self.PC[7]
+    supports TIM3-CH2 :
+      TIM3-CH2.p => self.PB[5]
+    supports TIM3-CH3 :
+      TIM3-CH3.p => self.PB[0]
+    supports TIM3-CH3 :
+      TIM3-CH3.p => self.PC[8]
+    supports TIM3-CH4 :
+      TIM3-CH4.p => self.PB[1]
+    supports TIM3-CH4 :
+      TIM3-CH4.p => self.PC[9]
+    
+    pcb-bundle TIM4-CH1 :
+      pin p
+    pcb-bundle TIM4-CH2 :
+      pin p
+    pcb-bundle TIM4-CH3 :
+      pin p
+    pcb-bundle TIM4-CH4 :
+      pin p
+    
+    supports TIM4-CH1 :
+      TIM4-CH1.p => self.PD[12]
+    supports TIM4-CH1 :
+      TIM4-CH1.p => self.PB[6]
+    supports TIM4-CH2 :
+      TIM4-CH2.p => self.PD[13]
+    supports TIM4-CH2 :
+      TIM4-CH2.p => self.PB[7]
+    supports TIM4-CH3 :
+      TIM4-CH3.p => self.PD[14]
+    supports TIM4-CH3 :
+      TIM4-CH3.p => self.PB[8]
+    supports TIM4-CH4 :
+      TIM4-CH4.p => self.PD[15]
+    supports TIM4-CH4 :
+      TIM4-CH4.p => self.PB[9]
+    
+    pcb-bundle TIM5-CH1 :
+      pin p
+    pcb-bundle TIM5-CH2 :
+      pin p
+    pcb-bundle TIM5-CH3 :
+      pin p
+    pcb-bundle TIM5-CH4 :
+      pin p
+    
+    supports TIM5-CH1 :
+      TIM5-CH1.p => self.PA[0]
+    supports TIM5-CH2 :
+      TIM5-CH2.p => self.PA[1]
+    supports TIM5-CH3 :
+      TIM5-CH3.p => self.PA[2]
+    supports TIM5-CH4 :
+      TIM5-CH4.p => self.PA[3]
+
+
+    pcb-bundle TIM8-CH1 :
+      pin p
+    pcb-bundle TIM8-CH2 :
+      pin p
+    pcb-bundle TIM8-CH3 :
+      pin p
+    pcb-bundle TIM8-CH4 :
+      pin p
+    
+    supports TIM8-CH1 :
+      TIM8-CH1.p => self.PA[5]
+    supports TIM8-CH1 :
+      TIM8-CH1.p => self.PA[7]
+    supports TIM8-CH1 :
+      TIM8-CH1.p => self.PC[6]
+    supports TIM8-CH2 :
+      TIM8-CH2.p => self.PB[0]
+    supports TIM8-CH2 :
+      TIM8-CH2.p => self.PB[14]
+    supports TIM8-CH2 :
+      TIM8-CH2.p => self.PC[7]
+    supports TIM8-CH3 :
+      TIM8-CH3.p => self.PB[1]
+    supports TIM8-CH3 :
+      TIM8-CH3.p => self.PB[15]
+    supports TIM8-CH3 :
+      TIM8-CH3.p => self.PC[8]
+    supports TIM8-CH4 :
+      TIM8-CH4.p => self.PC[9]
+
+
+    pcb-bundle TIM12-CH1 :
+      pin p
+    pcb-bundle TIM12-CH2 :
+      pin p
+    
+    supports TIM12-CH1 :
+      TIM12-CH1.p => self.PB[14]
+    supports TIM12-CH2 :
+      TIM12-CH2.p => self.PB[15]
+    
+    
+    pcb-bundle TIM13-CH1 :
+      pin p
+    
+    supports TIM13-CH1 :
+      TIM13-CH1.p => self.PA[6]
+    
+    pcb-bundle TIM14-CH1 :
+      pin p
+    
+    supports TIM14-CH1 :
+      TIM14-CH1.p => self.PA[7]
+    
+    pcb-bundle TIM15-CH1 :
+      pin p
+    pcb-bundle TIM15-CH2 :
+      pin p
+    
+    supports TIM15-CH1 :
+      TIM15-CH1.p => self.PE[5]
+    supports TIM15-CH1 :
+      TIM15-CH1.p => self.PA[2]
+    supports TIM15-CH1 :
+      TIM15-CH1.p => self.PC[12]
+    supports TIM15-CH2 :
+      TIM15-CH2.p => self.PE[6]
+    supports TIM15-CH2 :
+      TIM15-CH2.p => self.PA[13]
+
+    pcb-bundle TIM16-CH1 :
+      pin p
+    
+    supports TIM16-CH1 :
+      TIM16-CH1.p => self.PB[8]
+
+    pcb-bundle TIM17-CH1 :
+      pin p
+    
+    supports TIM17-CH1 :
+      TIM17-CH1.p => self.PB[9]
+
+    ; TIM1
+    ; TIM2
+    ; TIM3
+    ; TIM4
+    ; TIM5
+    ; TIM8
+    ; TIM12
+    ; TIM13
+    ; TIM14
+    ; TIM15
+    ; TIM16
+    ; TIM17
+
+    ; not implemented right now
+    ; LPTIM1
+    ; LPTIM2
+    ; LPTIM3
+    ; LPTIM4
+    ; LPTIM5
+
+    val tim1-pwm  = [TIM1-CH1 TIM1-CH2 TIM1-CH3 TIM1-CH4]
+    val tim2-pwm  = [TIM2-CH1 TIM2-CH2 TIM2-CH3 TIM2-CH4]
+    val tim3-pwm  = [TIM3-CH1 TIM3-CH2 TIM3-CH3 TIM3-CH4]
+    val tim4-pwm  = [TIM4-CH1 TIM4-CH2 TIM4-CH3 TIM4-CH4]
+    val tim5-pwm  = [TIM5-CH1 TIM5-CH2 TIM5-CH3 TIM5-CH4]
+    val tim8-pwm  = [TIM8-CH1 TIM8-CH2 TIM8-CH3 TIM8-CH4]
+    val tim12-pwm = [TIM12-CH1 TIM12-CH2]
+    val tim13-pwm = [TIM13-CH1]
+    val tim14-pwm = [TIM14-CH1]
+    val tim15-pwm = [TIM15-CH1 TIM15-CH2]
+    val tim16-pwm = [TIM16-CH1]
+    val tim17-pwm = [TIM17-CH1]
+    
+    for oo in [tim1-pwm tim2-pwm tim3-pwm tim4-pwm tim5-pwm tim8-pwm tim12-pwm tim13-pwm tim14-pwm tim15-pwm tim16-pwm tim17-pwm] do :
+      for o in oo do :
+        supports pwm :
+          require r : o
+          pwm.pwm => r.p

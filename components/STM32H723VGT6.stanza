@@ -9,12 +9,16 @@ defpackage stmicro/components/STM32H723VGT6 :
   import jsl/landpatterns
   import jsl/symbols
 
+  import stmicro/components/STM32H723VGT6-supports
+
+; TODO: jsl/landpatterns/quad needs work (not as fleshed out as QFN)
 defmethod name (pkg:Quad-Package) : "STM-LQFP100"
 defmethod courtyard-excess (pkg:Quad-Package) -> Double :
   val protrusion = lead-type $ lead $ x-leads $ lead-profile $ pkg
   val fillets = lead-fillets(protrusion, density-level = density-level(pkg))
   courtyard-excess(fillets)
 
+; package params
 val STM-LQFP100 =
   Quad-Package(
     num-leads = 100
@@ -37,7 +41,7 @@ val STM-LQFP100 =
     )
   )
 
-
+; component
 public pcb-component component :
   name = "STM32H723VGT6"
   description = "1MB 1.71V~3.6V ARM-MSeries 176KB 550MHz FLASH 80 LQFP-100(14x14)  Microcontroller Units (MCUs/MPUs/SOCs) ROHS"
