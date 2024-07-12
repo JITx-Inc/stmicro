@@ -1,0 +1,36 @@
+#use-added-syntax(jitx)
+defpackage stmicro/components/api :
+  import core
+
+public pcb-enum stmicro/components/api/STMPinMode :
+  STMI2CMode
+  STMSPIMode
+  STMSerialWireMode
+  STMSerialWireDebugMode
+  STMHSEExternalMode
+  STMLSEExternalMode
+
+public pcb-enum ocdb/components/st-microelectronics/generate-ioc/STM32IPs :
+  STMI2C1IP   ; I2C1
+  STMI2C2IP   ; I2C2
+  STMCAN1IP   ; CAN1
+  STMCAN2IP   ; CAN2
+  STMLPUART1IP; LPUART1
+  STMUSART1IP ; USART1
+  STMUSART2IP ; USART2
+  STMUSART3IP ; USART3
+  STMUART4IP  ; UART4
+  STMUART5IP  ; UART5
+  STMUSART6IP ; USART6
+  STMRCCIP    ; RCC - default
+  STMRTCIP    ; RTC - when adding 32kHz xtal?
+  STMSPI1IP   ; SPI1
+  STMSPI2IP   ; SPI2
+  STMSPI3IP   ; SPI3
+  STMSYSIP    ; SYS - default
+  STMNVICIP   ; NVIC - default
+  STMADCIP    ; ADC
+  STMADC1IP   ; ADC1
+  STMADC2IP   ; ADC2
+  STMADC3IP   ; ADC3
+  STMDACIP    ; DAC
