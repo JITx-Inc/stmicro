@@ -494,15 +494,15 @@ public defn STM32H723VGT6-supports (stm) :
     property(stm.PA[6].SUPPORTS-BOOT) = true
     property(stm.PA[7].SUPPORTS-BOOT) = true
 
-    supports spi-controller():
+    supports spi-with-cs():
       require sdo-pin: SPI1_MOSI
       require sdi-pin: SPI1_MISO
       require sck-pin: SPI1_SCK
       require cs-pin: SPI1_NSS ; how to make this optional?
-      spi-controller().cipo => sdo-pin.p
-      spi-controller().copi => sdi-pin.p
-      spi-controller().sck => sck-pin.p
-      spi-controller().cs => cs-pin.p
+      spi-with-cs().cipo => sdo-pin.p
+      spi-with-cs().copi => sdi-pin.p
+      spi-with-cs().sck => sck-pin.p
+      spi-with-cs().cs => cs-pin.p
 
       property(sdo-pin.p.stm32-signal-name) = "SPI1_MOSI"
       property(sdi-pin.p.stm32-signal-name) = "SPI1_MISO"
@@ -551,15 +551,15 @@ public defn STM32H723VGT6-supports (stm) :
     supports SPI2_MISO:
       SPI2_MISO.p => stm.PB[14]
     
-    supports spi-controller():
+    supports spi-with-cs():
       require sdo-pin: SPI2_MOSI
       require sdi-pin: SPI2_MISO
       require sck-pin: SPI2_SCK
       require cs-pin: SPI2_NSS ; how to make this optional?
-      spi-controller().cipo => sdo-pin.p
-      spi-controller().copi => sdi-pin.p
-      spi-controller().sck => sck-pin.p
-      spi-controller().cs => cs-pin.p
+      spi-with-cs().cipo => sdo-pin.p
+      spi-with-cs().copi => sdi-pin.p
+      spi-with-cs().sck => sck-pin.p
+      spi-with-cs().cs => cs-pin.p
       property(sdo-pin.p.stm32-signal-name) = "SPI2_MOSI"
       property(sdi-pin.p.stm32-signal-name) = "SPI2_MISO"
       property(sck-pin.p.stm32-signal-name) = "SPI2_SCK"
@@ -604,15 +604,15 @@ public defn STM32H723VGT6-supports (stm) :
     supports SPI3_MISO:
       SPI3_MISO.p => stm.PB[4]
 
-    supports spi-controller():
+    supports spi-with-cs():
       require sdo-pin: SPI3_MOSI
       require sdi-pin: SPI3_MISO
       require sck-pin: SPI3_SCK
       require cs-pin: SPI3_NSS ; how to make this optional?
-      spi-controller().cipo => sdo-pin.p
-      spi-controller().copi => sdi-pin.p
-      spi-controller().sck => sck-pin.p
-      spi-controller().cs => cs-pin.p
+      spi-with-cs().cipo => sdo-pin.p
+      spi-with-cs().copi => sdi-pin.p
+      spi-with-cs().sck => sck-pin.p
+      spi-with-cs().cs => cs-pin.p
 
     pcb-bundle SPI4_MOSI:
       pin p
@@ -645,15 +645,15 @@ public defn STM32H723VGT6-supports (stm) :
     property(stm.PE[13].SUPPORTS-BOOT) = true
     property(stm.PE[14].SUPPORTS-BOOT) = true
 
-    supports spi-controller():
+    supports spi-with-cs():
       require sdo-pin: SPI4_MOSI
       require sdi-pin: SPI4_MISO
       require sck-pin: SPI4_SCK
       require cs-pin: SPI4_NSS ; how to make this optional?
-      spi-controller().cipo => sdo-pin.p
-      spi-controller().copi => sdi-pin.p
-      spi-controller().sck => sck-pin.p
-      spi-controller().cs => cs-pin.p
+      spi-with-cs().cipo => sdo-pin.p
+      spi-with-cs().copi => sdi-pin.p
+      spi-with-cs().sck => sck-pin.p
+      spi-with-cs().cs => cs-pin.p
 
     pcb-bundle SPI6_MOSI:
       pin p
@@ -685,15 +685,15 @@ public defn STM32H723VGT6-supports (stm) :
     supports SPI6_MISO:
       SPI6_MISO.p => stm.PB[4]
     
-    supports spi-controller():
+    supports spi-with-cs():
       require sdo-pin: SPI6_MOSI
       require sdi-pin: SPI6_MISO
       require sck-pin: SPI6_SCK
       require cs-pin: SPI6_NSS ; how to make this optional?
-      spi-controller().cipo => sdo-pin.p
-      spi-controller().copi => sdi-pin.p
-      spi-controller().sck => sck-pin.p
-      spi-controller().cs => cs-pin.p
+      spi-with-cs().cipo => sdo-pin.p
+      spi-with-cs().copi => sdi-pin.p
+      spi-with-cs().sck => sck-pin.p
+      spi-with-cs().cs => cs-pin.p
 
     pcb-bundle I2S1-CK :
       pin p
