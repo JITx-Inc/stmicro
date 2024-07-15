@@ -6,6 +6,7 @@ defpackage main :
 
   import jsl/examples/protocols/common/example-board
 
+; tiny wrapper to view schematic
 pcb-module main :
   inst c : stmicro/components/STM32H723VGT6/module
 

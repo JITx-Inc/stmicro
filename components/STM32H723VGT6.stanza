@@ -167,20 +167,23 @@ public pcb-component component :
   assign-landpattern $ create-landpattern(STM-LQFP100)
 
   ; Setup box symbol
+  val io-r = #R(IO)
+  val power-r = #R(power)
+  val config-r = #R(config)
 
   val box = BoxSymbol(self)
 
-  ; power power box
-  ;set-grid(power-box, [2,2], #R(power))
-
-  ; config box
-
-  ; miscellaneous box
+  set-grid(box, [3,2], io-r)
+  set-row(0, find-pins-by-regex(box, "^PA.*$")) ; A: left
+  set-row(1, find-pins-by-regex(box, "^PB.*$")) ; B: left 
+  set-row(2, find-pins-by-regex(box, "^PC.*$")) ; C: left
+  set-row(1, find-pins-by-regex(box, "^PD.*$")) ; D: Right 
+  set-row(2, find-pins-by-regex(box, "^PE.*$")) ; E: Right 
 
   assign-symbols(
-    Ref("IO") => box
-    Ref("config") => box
-    Ref("power") => box
+    io-r => box,
+    config-r => box,
+    power-r => box
   )
 
   property(self.category) = "ic"
