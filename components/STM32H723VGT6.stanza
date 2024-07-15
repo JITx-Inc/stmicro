@@ -11,6 +11,7 @@ defpackage stmicro/components/STM32H723VGT6 :
   import jsl/symbols
   import jsl/symbols/box-symbol/utils
   import jsl/bundles
+  import jsl/protocols/usb
 
   import stmicro/components/STM32H723VGT6-supports
 
@@ -57,9 +58,6 @@ public pcb-component component :
   property(self.stm32-mfg-package) = "LQFP-100(14x14)"
   property(self.rated-temperature) = min-max(-40.0, 105.0)
 
-  ; TODO: pin models
-  ; Banks:
-  ; 
   pin-properties :
     [pin:Ref | pads:Int ... | side:Dir | bank:Ref | stm32-pin-name:String ]
     [ PE[2]          |   1 | Right | IO   | "PE2"            ] ;| I/O | FT  | -      | TRACECLK, SAI1_CK1, USART10_RX, SPI4_SCK, SAI1_MCLK_A, SAI4_MCLK_A, OCTOSPIM_P1_IO2, SAI4_CK1, ETH_MII_TXD3, FMC_A23, EVENTOUT | -
@@ -174,11 +172,11 @@ public pcb-component component :
   val box = BoxSymbol(self)
 
   set-grid(box, [3,2], io-r)
-  set-row(0, find-pins-by-regex(box, "^PA.*$")) ; A: left
-  set-row(1, find-pins-by-regex(box, "^PB.*$")) ; B: left 
-  set-row(2, find-pins-by-regex(box, "^PC.*$")) ; C: left
-  set-row(1, find-pins-by-regex(box, "^PD.*$")) ; D: Right 
-  set-row(2, find-pins-by-regex(box, "^PE.*$")) ; E: Right 
+  set-row(0, find-pins-by-regex(box, "^PA.*$", bank = io-r)) ; A: left
+  set-row(1, find-pins-by-regex(box, "^PB.*$", bank = io-r)) ; B: left 
+  set-row(2, find-pins-by-regex(box, "^PC.*$", bank = io-r)) ; C: left
+  set-row(1, find-pins-by-regex(box, "^PD.*$", bank = io-r)) ; D: Right 
+  set-row(2, find-pins-by-regex(box, "^PE.*$", bank = io-r)) ; E: Right 
 
   assign-symbols(
     io-r => box,
@@ -199,7 +197,6 @@ public pcb-component component :
   property(self.mounting) = "smd"
 
 ; copy/pasted from ethernet-io-lib
-; TODO: be smarter
 defn get-rail-voltage (p:JITXObject, -- def-V:Double, margin:Double) -> Double :
   ; TODO determine the communication interface here 
   ;  Ideally - we are placing a property on the voltage rail pin 
@@ -212,7 +209,6 @@ val cap-margin = 2.0
 
 public pcb-module module :
 
-  ; TODO: power rails
   ; each one gets a bulk cap
   port rail-VDD : power
   port rail-VDDA : power
@@ -238,7 +234,6 @@ public pcb-module module :
   ;==================================================
 
   ; Add a decoupling cap
-  ; TODO: schematic groups
   defn decouple (v, g, voltage:Double, sgroup) :
     val c = insert-capacitor(
       v, g,
@@ -278,9 +273,18 @@ public pcb-module module :
   ; TODO: is this GND pin ok?
   decouple(stm.VBAT, stm.VSS[0], BAT-voltage, `bypass-cap-VBAT)
 
+  port gnd-fanout:pin[10]
+  for p in pins(gnd-fanout) :
+    net (GND p)
 
-
-
+  supports usb-2-connector :
+    require usb:usb-data
+    usb-2-connector.vbus.V+ => stm.PA[9]
+    usb-2-connector.vbus.V- => gnd-fanout[0] ; TODO: use pin solver?
+    usb-2-connector.bus.data.N => usb.data.N
+    usb-2-connector.bus.data.P => usb.data.P
+    usb-2-connector.id => stm.PA[10]
+    
 
 
   

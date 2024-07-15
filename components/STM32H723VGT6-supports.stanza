@@ -7,10 +7,11 @@ defpackage stmicro/components/STM32H723VGT6-supports :
   import jitx/commands
 
   import jsl/bundles
+  import stmicro/bundles
+  import jsl/protocols/usb
   import jsl/protocols/ethernet/MII/RMII
 
   import stmicro/components/api
-  import stmicro/bundles
 
 public pcb-bundle pwm :
   pin pwm
@@ -1111,6 +1112,11 @@ public defn STM32H723VGT6-supports (stm) :
 
       eth.txd[0] => stm.PB[12]
       eth.txd[1] => stm.PB[13]
+
+    ; USB support
+    supports usb-data :
+      usb-data.data.N => stm.PA[11]
+      usb-data.data.P => stm.PA[12]
 
     ; TIM1
     ; TIM2
