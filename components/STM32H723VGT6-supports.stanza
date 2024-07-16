@@ -7,7 +7,8 @@ defpackage stmicro/components/STM32H723VGT6-supports :
   import jitx/commands
 
   import jsl/bundles
-  import stmicro/bundles
+  import stmicro/bundles with:
+    prefix(i2s) => STM-
   import jsl/protocols/usb
   import jsl/protocols/ethernet/MII/RMII
 
@@ -40,7 +41,7 @@ public defn STM32H723VGT6-supports (stm) :
       property(swdclk.p.stm32-pin-mode) = STMSerialWireDebugMode
 
     supports reset:
-      reset.p => stm.NRST
+      reset.reset => stm.NRST
 
     ; ; does not account for P/N differential ADC inputs 
     val ADC123-LIST = [stm.PC[0] stm.PC[1]]
@@ -50,43 +51,43 @@ public defn STM32H723VGT6-supports (stm) :
 
     for (p in ADC123-LIST, i in 0 to false) do :
       supports adc:
-        adc.p => p
+        adc.adc => p
     for (p in ADC12-LIST, i in 0 to false) do :
       supports adc:
-        adc.p => p
+        adc.adc => p
     for (p in ADC1-LIST, i in 0 to false) do :
       supports adc:
-        adc.p => p
+        adc.adc => p
     for (p in ADC3-LIST, i in 0 to false) do :
       supports adc:
-        adc.p => p
+        adc.adc => p
         ; property(p.stm32-signal-name) = to-string("ADCx_IN%_" % [i])
         ; property(p.stm32-ip-name) = STMADC1IP
         ; ;property(swdio.p.stm32-ip-name) = STMADC2IP
 
     for p in pins(stm.PA) do:
       supports gpio :
-        gpio.p => p
+        gpio.gpio => p
         property(p.stm32-signal-name) = "GPIO"
       
     for p in pins(stm.PB) do:
       supports gpio :
-        gpio.p => p
+        gpio.gpio => p
         property(p.stm32-signal-name) = "GPIO"
 
     for p in pins(stm.PC) do:
       supports gpio :
-        gpio.p => p
+        gpio.gpio => p
         property(p.stm32-signal-name) = "GPIO"      
 
     for p in pins(stm.PD) do:
       supports gpio :
-        gpio.p => p
+        gpio.gpio => p
         property(p.stm32-signal-name) = "GPIO"      
 
     for p in pins(stm.PE) do:
       supports gpio :
-        gpio.p => p
+        gpio.gpio => p
         property(p.stm32-signal-name) = "GPIO"      
 
     pcb-bundle RCC_OSC_IN:
@@ -730,7 +731,7 @@ public defn STM32H723VGT6-supports (stm) :
     supports I2S1-MCK :
       I2S1-MCK.p => stm.PC[4]
     
-    val i2s-io = i2s([I2S-MCK I2S-SDMI])
+    val i2s-io = STM-i2s([I2S-MCK I2S-SDMI])
 
     supports i2s-io :
       require ck : I2S1-CK

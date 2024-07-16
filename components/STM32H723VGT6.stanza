@@ -7,7 +7,10 @@ defpackage stmicro/components/STM32H723VGT6 :
   import jitx/commands
   import jitx/parts/query-api
 
-  import jsl/landpatterns
+  import jsl/landpatterns/quad
+  import jsl/landpatterns/QFP
+  import jsl/landpatterns/leads
+  import jsl/landpatterns/packages
   import jsl/symbols
   import jsl/symbols/box-symbol/utils
   import jsl/bundles
@@ -15,27 +18,16 @@ defpackage stmicro/components/STM32H723VGT6 :
 
   import stmicro/components/STM32H723VGT6-supports
 
-; TODO: jsl/landpatterns/quad needs work (not as fleshed out as QFN)
-defmethod name (pkg:Quad-Package) : "STM-LQFP100"
-defmethod courtyard-excess (pkg:Quad-Package) -> Double :
-  val protrusion = lead-type $ lead $ x-leads $ lead-profile $ pkg
-  val fillets = lead-fillets(protrusion, density-level = density-level(pkg))
-  courtyard-excess(fillets)
-
 ; package params
 val STM-LQFP100 =
-  Quad-Package(
+  QFP(
     num-leads = 100
-    lead-profile = Quad-Lead-Profile(
-      profile = Lead-Profile(
-        span = 16.0 +/- 0.2
-        pitch = 0.5
-        lead = SMT-Lead(
-          SmallGullWingLeads() ; lead-type
-          0.6 +/- 0.15 ; length
-          0.22 +/- 0.05 ; width
-        )
-      )
+    lead-profile = QFP-Lead-Profile(
+      lead-type = SmallGullWingLeads()
+      span = 16.0 +/- 0.2
+      pitch = 0.5
+      lead-length = 0.6 +/- 0.15
+      lead-width = 0.22 +/- 0.05
     )
     thermal-lead? = false
     package-body = PackageBody(
@@ -44,6 +36,7 @@ val STM-LQFP100 =
       height = 1.55 +/- 0.05
     )
   )
+
 
 ; component
 public pcb-component component :
