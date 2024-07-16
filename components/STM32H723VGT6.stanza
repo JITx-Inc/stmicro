@@ -273,7 +273,7 @@ public pcb-module module :
   ; TODO: is this GND pin ok?
   decouple(stm.VBAT, stm.VSS[0], BAT-voltage, `bypass-cap-VBAT)
 
-  port gnd-fanout:pin[10]
+  node gnd-fanout:pin[10]
   for p in pins(gnd-fanout) :
     net (GND p)
 
