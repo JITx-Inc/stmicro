@@ -4,8 +4,6 @@ defpackage stmicro/bundles :
   import jitx
   import jitx/commands
 
-; bundles that I couldn't find in jsl
-
 public pcb-bundle high-freq-oscillator :
   pin in
   pin out
@@ -13,6 +11,9 @@ public pcb-bundle high-freq-oscillator :
 public pcb-bundle low-freq-oscillator :
   pin in
   pin out
+
+; Custom i2s bundle:
+; includes master clock, differentiates between data in/out
 
 public pcb-bundle I2S1_WS:
   pin p

@@ -43,7 +43,7 @@ public defn STM32H723VGT6-supports (stm) :
     supports reset:
       reset.reset => stm.NRST
 
-    ; ; does not account for P/N differential ADC inputs 
+    ; ; does not account for P/N differential ADC inputs
     val ADC123-LIST = [stm.PC[0] stm.PC[1]]
     val ADC12-LIST = [stm.PA[2] stm.PA[3] stm.PA[4] stm.PA[5] stm.PA[6] stm.PA[7] stm.PB[0] stm.PB[1]  stm.PC[4] stm.PC[5]]
     val ADC1-LIST = [stm.PA[0] stm.PA[1]]
@@ -69,7 +69,7 @@ public defn STM32H723VGT6-supports (stm) :
       supports gpio :
         gpio.gpio => p
         property(p.stm32-signal-name) = "GPIO"
-      
+
     for p in pins(stm.PB) do:
       supports gpio :
         gpio.gpio => p
@@ -78,17 +78,17 @@ public defn STM32H723VGT6-supports (stm) :
     for p in pins(stm.PC) do:
       supports gpio :
         gpio.gpio => p
-        property(p.stm32-signal-name) = "GPIO"      
+        property(p.stm32-signal-name) = "GPIO"
 
     for p in pins(stm.PD) do:
       supports gpio :
         gpio.gpio => p
-        property(p.stm32-signal-name) = "GPIO"      
+        property(p.stm32-signal-name) = "GPIO"
 
     for p in pins(stm.PE) do:
       supports gpio :
         gpio.gpio => p
-        property(p.stm32-signal-name) = "GPIO"      
+        property(p.stm32-signal-name) = "GPIO"
 
     pcb-bundle RCC_OSC_IN:
       port p
@@ -99,7 +99,7 @@ public defn STM32H723VGT6-supports (stm) :
       RCC_OSC_IN.p => stm.PH[0]
     supports RCC_OSC_OUT:
       RCC_OSC_OUT.p => stm.PH[1]
-    
+
     supports high-freq-oscillator:
       require in-pin: RCC_OSC_IN
       require out-pin: RCC_OSC_OUT
@@ -122,7 +122,7 @@ public defn STM32H723VGT6-supports (stm) :
       RCC_OSC32_IN.p => stm.PC[14]
     supports RCC_OSC32_OUT:
       RCC_OSC32_OUT.p => stm.PC[15]
-    
+
     supports low-freq-oscillator:
       require in-pin: RCC_OSC32_IN
       require out-pin: RCC_OSC32_OUT
@@ -165,7 +165,7 @@ public defn STM32H723VGT6-supports (stm) :
       USART1_RX.p => stm.PA[10]
     supports USART1_RX:
       USART1_RX.p => stm.PB[7]
-      
+
     supports USART1_RTS:
       USART1_RTS.p => stm.PA[12]
     supports USART1_CTS:
@@ -197,22 +197,22 @@ public defn STM32H723VGT6-supports (stm) :
       uart-fc.rx => rx-pin.p
       uart-fc.rts => rts-pin.p
       uart-fc.cts => cts-pin.p
-      property(tx-pin.p.stm32-signal-name) = "USART1_TX"
-      property(rx-pin.p.stm32-signal-name) = "USART1_RX"
-      property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
-      property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
-      property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(tx-pin.p.stm32-pin-locked) = true
-      property(rx-pin.p.stm32-pin-locked) = true
-      property(rts-pin.p.stm32-pin-locked) = true
-      property(cts-pin.p.stm32-pin-locked) = true
-      property(tx-pin.p.stm32-ip-name) = STMUSART1IP
-      property(rx-pin.p.stm32-ip-name) = STMUSART1IP
-      property(rts-pin.p.stm32-ip-name) = STMUSART1IP
-      property(cts-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(tx-pin.p.stm32-signal-name) = "USART1_TX"
+      ; property(rx-pin.p.stm32-signal-name) = "USART1_RX"
+      ; property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
+      ; property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
+      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(tx-pin.p.stm32-pin-locked) = true
+      ; property(rx-pin.p.stm32-pin-locked) = true
+      ; property(rts-pin.p.stm32-pin-locked) = true
+      ; property(cts-pin.p.stm32-pin-locked) = true
+      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rts-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(cts-pin.p.stm32-ip-name) = STMUSART1IP
 
     val uart-fc-ck = uart(UART-RX, UART-TX, UART-RTS, UART-CTS, UART-CK)
 
@@ -227,26 +227,26 @@ public defn STM32H723VGT6-supports (stm) :
       uart-fc-ck.rts => rts-pin.p
       uart-fc-ck.cts => cts-pin.p
       uart-fc-ck.ck => ck-pin.p
-      property(tx-pin.p.stm32-signal-name) = "USART1_TX"
-      property(rx-pin.p.stm32-signal-name) = "USART1_RX"
-      property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
-      property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
-      property(ck-pin.p.stm32-signal-name) = "USART1_CK"
-      property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(ck-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(tx-pin.p.stm32-pin-locked) = true
-      property(rx-pin.p.stm32-pin-locked) = true
-      property(rts-pin.p.stm32-pin-locked) = true
-      property(cts-pin.p.stm32-pin-locked) = true
-      property(ck-pin.p.stm32-pin-locked) = true
-      property(tx-pin.p.stm32-ip-name) = STMUSART1IP
-      property(rx-pin.p.stm32-ip-name) = STMUSART1IP
-      property(rts-pin.p.stm32-ip-name) = STMUSART1IP
-      property(cts-pin.p.stm32-ip-name) = STMUSART1IP
-      property(ck-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(tx-pin.p.stm32-signal-name) = "USART1_TX"
+      ; property(rx-pin.p.stm32-signal-name) = "USART1_RX"
+      ; property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
+      ; property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
+      ; property(ck-pin.p.stm32-signal-name) = "USART1_CK"
+      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(ck-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(tx-pin.p.stm32-pin-locked) = true
+      ; property(rx-pin.p.stm32-pin-locked) = true
+      ; property(rts-pin.p.stm32-pin-locked) = true
+      ; property(cts-pin.p.stm32-pin-locked) = true
+      ; property(ck-pin.p.stm32-pin-locked) = true
+      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(rts-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(cts-pin.p.stm32-ip-name) = STMUSART1IP
+      ; property(ck-pin.p.stm32-ip-name) = STMUSART1IP
 
     pcb-bundle USART2_TX:
       port p
@@ -277,7 +277,7 @@ public defn STM32H723VGT6-supports (stm) :
       USART2_RTS.p => stm.PA[1]
     supports USART2_RTS:
       USART2_RTS.p => stm.PD[4]
-      
+
     supports USART2_CTS:
       USART2_CTS.p => stm.PA[0]
     supports USART2_CTS:
@@ -293,12 +293,12 @@ public defn STM32H723VGT6-supports (stm) :
       require rx-pin: USART2_RX
       minimal-uart().tx => tx-pin.p
       minimal-uart().rx => rx-pin.p
-      property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(tx-pin.p.stm32-signal-name) = "USART2_TX"
-      property(rx-pin.p.stm32-signal-name) = "USART2_RX"
-      property(tx-pin.p.stm32-ip-name) = STMUSART2IP
-      property(rx-pin.p.stm32-ip-name) = STMUSART2IP
+      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
+      ; property(tx-pin.p.stm32-signal-name) = "USART2_TX"
+      ; property(rx-pin.p.stm32-signal-name) = "USART2_RX"
+      ; property(tx-pin.p.stm32-ip-name) = STMUSART2IP
+      ; property(rx-pin.p.stm32-ip-name) = STMUSART2IP
 
     property(stm.PA[2].SUPPORTS-BOOT) = true
     property(stm.PA[3].SUPPORTS-BOOT) = true
@@ -328,14 +328,14 @@ public defn STM32H723VGT6-supports (stm) :
     ; USART10
     ; USART3
     ; USART6
-    ; 
+    ;
     ; UART8
     ; UART4
     ; LPUART1
     ; UART5
     ; UART7
     ; UART9
-    ; 
+    ;
 
     pcb-bundle I2C1_SCL:
       port p
@@ -356,12 +356,12 @@ public defn STM32H723VGT6-supports (stm) :
       require sda-pin: I2C1_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      property(scl-pin.p.stm32-signal-name) = "I2C1_SCL"
-      property(sda-pin.p.stm32-signal-name) = "I2C1_SDA"
-      property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      property(scl-pin.p.stm32-ip-name) = STMI2C1IP
-      property(sda-pin.p.stm32-ip-name) = STMI2C1IP
+      ; property(scl-pin.p.stm32-signal-name) = "I2C1_SCL"
+      ; property(sda-pin.p.stm32-signal-name) = "I2C1_SDA"
+      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(scl-pin.p.stm32-ip-name) = STMI2C1IP
+      ; property(sda-pin.p.stm32-ip-name) = STMI2C1IP
 
     pcb-bundle I2C2_SCL:
       port p
@@ -378,12 +378,12 @@ public defn STM32H723VGT6-supports (stm) :
       require sda-pin: I2C2_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      property(scl-pin.p.stm32-signal-name) = "I2C2_SCL"
-      property(sda-pin.p.stm32-signal-name) = "I2C2_SDA"
-      property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      property(scl-pin.p.stm32-ip-name) = STMI2C2IP
-      property(sda-pin.p.stm32-ip-name) = STMI2C2IP
+      ; property(scl-pin.p.stm32-signal-name) = "I2C2_SCL"
+      ; property(sda-pin.p.stm32-signal-name) = "I2C2_SDA"
+      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
+      ; property(scl-pin.p.stm32-ip-name) = STMI2C2IP
+      ; property(sda-pin.p.stm32-ip-name) = STMI2C2IP
 
 
     pcb-bundle I2C3_SCL:
@@ -425,7 +425,7 @@ public defn STM32H723VGT6-supports (stm) :
       I2C4_SDA.p => stm.PB[7]
     supports I2C4_SDA:
       I2C4_SDA.p => stm.PB[9]
-      
+
 
     supports i2c:
       require scl-pin: I2C4_SCL
@@ -452,7 +452,7 @@ public defn STM32H723VGT6-supports (stm) :
       I2C5_SDA.p => stm.PC[10]
     supports I2C5_SDA:
       I2C5_SDA.p => stm.PC[9]
-      
+
     supports i2c:
       require scl-pin: I2C5_SCL
       require sda-pin: I2C5_SDA
@@ -508,18 +508,18 @@ public defn STM32H723VGT6-supports (stm) :
       spi-with-cs().sck => sck-pin.p
       spi-with-cs().cs => cs-pin.p
 
-      property(sdo-pin.p.stm32-signal-name) = "SPI1_MOSI"
-      property(sdi-pin.p.stm32-signal-name) = "SPI1_MISO"
-      property(sck-pin.p.stm32-signal-name) = "SPI1_SCK"
-      property(cs-pin.p.stm32-signal-name) = "SPI1_NSS"
-      property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sck-pin.p.stm32-pin-mode) = STMSPIMode
-      property(cs-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdo-pin.p.stm32-ip-name) = STMSPI1IP
-      property(sdi-pin.p.stm32-ip-name) = STMSPI1IP
-      property(sck-pin.p.stm32-ip-name) = STMSPI1IP
-      property(cs-pin.p.stm32-ip-name) = STMSPI1IP
+      ; property(sdo-pin.p.stm32-signal-name) = "SPI1_MOSI"
+      ; property(sdi-pin.p.stm32-signal-name) = "SPI1_MISO"
+      ; property(sck-pin.p.stm32-signal-name) = "SPI1_SCK"
+      ; property(cs-pin.p.stm32-signal-name) = "SPI1_NSS"
+      ; property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sck-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(cs-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdo-pin.p.stm32-ip-name) = STMSPI1IP
+      ; property(sdi-pin.p.stm32-ip-name) = STMSPI1IP
+      ; property(sck-pin.p.stm32-ip-name) = STMSPI1IP
+      ; property(cs-pin.p.stm32-ip-name) = STMSPI1IP
 
     pcb-bundle SPI2_MOSI:
       port p
@@ -554,7 +554,7 @@ public defn STM32H723VGT6-supports (stm) :
       SPI2_MOSI.p => stm.PB[15]
     supports SPI2_MISO:
       SPI2_MISO.p => stm.PB[14]
-    
+
     supports spi-with-cs():
       require sdo-pin: SPI2_MOSI
       require sdi-pin: SPI2_MISO
@@ -564,19 +564,19 @@ public defn STM32H723VGT6-supports (stm) :
       spi-with-cs().copi => sdi-pin.p
       spi-with-cs().sck => sck-pin.p
       spi-with-cs().cs => cs-pin.p
-      property(sdo-pin.p.stm32-signal-name) = "SPI2_MOSI"
-      property(sdi-pin.p.stm32-signal-name) = "SPI2_MISO"
-      property(sck-pin.p.stm32-signal-name) = "SPI2_SCK"
-      property(cs-pin.p.stm32-signal-name) = "SPI2_NSS"
-      property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sck-pin.p.stm32-pin-mode) = STMSPIMode
-      property(cs-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdo-pin.p.stm32-ip-name) = STMSPI2IP
-      property(sdi-pin.p.stm32-ip-name) = STMSPI2IP
-      property(sck-pin.p.stm32-ip-name) = STMSPI2IP
-      property(cs-pin.p.stm32-ip-name) = STMSPI2IP
-      ;property(cs-pin.p.pin-mode) = "NSS_Signal_Hard_Output"
+      ; property(sdo-pin.p.stm32-signal-name) = "SPI2_MOSI"
+      ; property(sdi-pin.p.stm32-signal-name) = "SPI2_MISO"
+      ; property(sck-pin.p.stm32-signal-name) = "SPI2_SCK"
+      ; property(cs-pin.p.stm32-signal-name) = "SPI2_NSS"
+      ; property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sck-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(cs-pin.p.stm32-pin-mode) = STMSPIMode
+      ; property(sdo-pin.p.stm32-ip-name) = STMSPI2IP
+      ; property(sdi-pin.p.stm32-ip-name) = STMSPI2IP
+      ; property(sck-pin.p.stm32-ip-name) = STMSPI2IP
+      ; property(cs-pin.p.stm32-ip-name) = STMSPI2IP
+      ; ;property(cs-pin.p.pin-mode) = "NSS_Signal_Hard_Output"
 
     pcb-bundle SPI3_MOSI:
       port p
@@ -688,7 +688,7 @@ public defn STM32H723VGT6-supports (stm) :
       SPI6_MISO.p => stm.PA[6]
     supports SPI6_MISO:
       SPI6_MISO.p => stm.PB[4]
-    
+
     supports spi-with-cs():
       require sdo-pin: SPI6_MOSI
       require sdi-pin: SPI6_MISO
@@ -730,7 +730,7 @@ public defn STM32H723VGT6-supports (stm) :
       I2S1-WS.p => stm.PA[15]
     supports I2S1-MCK :
       I2S1-MCK.p => stm.PC[4]
-    
+
     val i2s-io = STM-i2s([I2S-MCK I2S-SDMI])
 
     supports i2s-io :
@@ -744,7 +744,7 @@ public defn STM32H723VGT6-supports (stm) :
       i2s-io.sdmo => sdi.p
       i2s-io.sdmi => sdo.p
       i2s-io.mck => mck.p
-      
+
     pcb-bundle I2S2-CK :
       port p
     pcb-bundle I2S2-SDI :
@@ -782,7 +782,7 @@ public defn STM32H723VGT6-supports (stm) :
       I2S2-WS.p => stm.PB[9]
     supports I2S2-MCK :
       I2S2-MCK.p => stm.PC[6]
-    
+
     supports i2s-io :
       require ck : I2S2-CK
       require ws : I2S2-WS
@@ -794,7 +794,7 @@ public defn STM32H723VGT6-supports (stm) :
       i2s-io.sdmo => sdo.p
       i2s-io.sdmi => sdi.p
       i2s-io.mck => mck.p
-      
+
 
     pcb-bundle I2S3-CK :
       port p
@@ -829,7 +829,7 @@ public defn STM32H723VGT6-supports (stm) :
       I2S3-WS.p => stm.PA[15]
     supports I2S3-MCK :
       I2S3-MCK.p => stm.PC[7]
-    
+
     supports i2s-io :
       require ck : I2S3-CK
       require ws : I2S3-WS
@@ -877,7 +877,7 @@ public defn STM32H723VGT6-supports (stm) :
       I2S6-WS.p => stm.PA[15]
     supports I2S6-MCK :
       I2S6-MCK.p => stm.PA[3]
-    
+
     supports i2s-io :
       require ck : I2S6-CK
       require ws : I2S6-WS
@@ -899,7 +899,7 @@ public defn STM32H723VGT6-supports (stm) :
       port p
     pcb-bundle TIM1-CH4 :
       port p
-    
+
     supports TIM1-CH1 :
       TIM1-CH1.p => stm.PE[9]
     supports TIM1-CH1 :
@@ -916,8 +916,8 @@ public defn STM32H723VGT6-supports (stm) :
       TIM1-CH4.p => stm.PE[14]
     supports TIM1-CH4 :
       TIM1-CH4.p => stm.PA[11]
-    
-    
+
+
     pcb-bundle TIM2-CH1 :
       port p
     pcb-bundle TIM2-CH2 :
@@ -926,7 +926,7 @@ public defn STM32H723VGT6-supports (stm) :
       port p
     pcb-bundle TIM2-CH4 :
       port p
-    
+
     supports TIM2-CH1 :
       TIM2-CH1.p => stm.PA[0]
     supports TIM2-CH1 :
@@ -943,7 +943,7 @@ public defn STM32H723VGT6-supports (stm) :
       TIM2-CH3.p => stm.PB[11]
     supports TIM2-CH4 :
       TIM2-CH4.p => stm.PA[3]
-    
+
     pcb-bundle TIM3-CH1 :
       port p
     pcb-bundle TIM3-CH2 :
@@ -952,7 +952,7 @@ public defn STM32H723VGT6-supports (stm) :
       port p
     pcb-bundle TIM3-CH4 :
       port p
-    
+
     supports TIM3-CH1 :
       TIM3-CH1.p => stm.PA[6]
     supports TIM3-CH1 :
@@ -973,7 +973,7 @@ public defn STM32H723VGT6-supports (stm) :
       TIM3-CH4.p => stm.PB[1]
     supports TIM3-CH4 :
       TIM3-CH4.p => stm.PC[9]
-    
+
     pcb-bundle TIM4-CH1 :
       port p
     pcb-bundle TIM4-CH2 :
@@ -982,7 +982,7 @@ public defn STM32H723VGT6-supports (stm) :
       port p
     pcb-bundle TIM4-CH4 :
       port p
-    
+
     supports TIM4-CH1 :
       TIM4-CH1.p => stm.PD[12]
     supports TIM4-CH1 :
@@ -999,7 +999,7 @@ public defn STM32H723VGT6-supports (stm) :
       TIM4-CH4.p => stm.PD[15]
     supports TIM4-CH4 :
       TIM4-CH4.p => stm.PB[9]
-    
+
     pcb-bundle TIM5-CH1 :
       port p
     pcb-bundle TIM5-CH2 :
@@ -1008,7 +1008,7 @@ public defn STM32H723VGT6-supports (stm) :
       port p
     pcb-bundle TIM5-CH4 :
       port p
-    
+
     supports TIM5-CH1 :
       TIM5-CH1.p => stm.PA[0]
     supports TIM5-CH2 :
@@ -1027,7 +1027,7 @@ public defn STM32H723VGT6-supports (stm) :
       port p
     pcb-bundle TIM8-CH4 :
       port p
-    
+
     supports TIM8-CH1 :
       TIM8-CH1.p => stm.PA[5]
     supports TIM8-CH1 :
@@ -1054,30 +1054,30 @@ public defn STM32H723VGT6-supports (stm) :
       port p
     pcb-bundle TIM12-CH2 :
       port p
-    
+
     supports TIM12-CH1 :
       TIM12-CH1.p => stm.PB[14]
     supports TIM12-CH2 :
       TIM12-CH2.p => stm.PB[15]
-    
-    
+
+
     pcb-bundle TIM13-CH1 :
       port p
-    
+
     supports TIM13-CH1 :
       TIM13-CH1.p => stm.PA[6]
-    
+
     pcb-bundle TIM14-CH1 :
       port p
-    
+
     supports TIM14-CH1 :
       TIM14-CH1.p => stm.PA[7]
-    
+
     pcb-bundle TIM15-CH1 :
       port p
     pcb-bundle TIM15-CH2 :
       port p
-    
+
     supports TIM15-CH1 :
       TIM15-CH1.p => stm.PE[5]
     supports TIM15-CH1 :
@@ -1091,13 +1091,13 @@ public defn STM32H723VGT6-supports (stm) :
 
     pcb-bundle TIM16-CH1 :
       port p
-    
+
     supports TIM16-CH1 :
       TIM16-CH1.p => stm.PB[8]
 
     pcb-bundle TIM17-CH1 :
       port p
-    
+
     supports TIM17-CH1 :
       TIM17-CH1.p => stm.PB[9]
 
@@ -1151,7 +1151,7 @@ public defn STM32H723VGT6-supports (stm) :
     val tim15-pwm = [TIM15-CH1 TIM15-CH2]
     val tim16-pwm = [TIM16-CH1]
     val tim17-pwm = [TIM17-CH1]
-    
+
     for oo in [tim1-pwm tim2-pwm tim3-pwm tim4-pwm tim5-pwm tim8-pwm tim12-pwm tim13-pwm tim14-pwm tim15-pwm tim16-pwm tim17-pwm] do :
       for o in oo do :
         supports pwm :

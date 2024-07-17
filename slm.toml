@@ -2,5 +2,5 @@ name = "stmicro"
 version = "0.1.0"
 [dependencies]
 # jsl = { git = "JITx-Inc/jsl", version = "0.4.0" }
-jsl =  { path = "/Users/tristanknoth/dev/jsl" } 
+jsl =  { path = "/Users/tristanknoth/dev/jsl" }
 JITX = { path = "{SLM_ROOT}/JITX" }

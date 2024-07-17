@@ -10,7 +10,7 @@ public pcb-enum stmicro/components/api/STMPinMode :
   STMHSEExternalMode
   STMLSEExternalMode
 
-public pcb-enum stmicro/components/STM32IPs :
+public pcb-enum stmicro/components/api/STM32IPs :
   STMI2C1IP   ; I2C1
   STMI2C2IP   ; I2C2
   STMCAN1IP   ; CAN1

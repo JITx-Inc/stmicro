@@ -192,25 +192,25 @@ public pcb-component component :
   ; Arrange first IO bank
   set-grid(box, [2,2], io1-r)
 
-  set-row(0, find-pins-by-regex(box, "^PA.*$", bank = io1-r)) ; A: left
-  set-column(0, find-pins-by-regex(box, "^PA.*$", bank = io1-r)) ; A: left
+  set-row(0, find-pins-by-regex(box, "^PA.*$", bank = io1-r))    ; A: left
+  set-column(0, find-pins-by-regex(box, "^PA.*$", bank = io1-r))
 
-  set-row(1, find-pins-by-regex(box, "^PB.*$", bank = io1-r)) ; A: left
-  set-column(0, find-pins-by-regex(box, "^PB.*$", bank = io1-r)) ; A: left
+  set-row(1, find-pins-by-regex(box, "^PB.*$", bank = io1-r))    ; B: left
+  set-column(0, find-pins-by-regex(box, "^PB.*$", bank = io1-r))
   set-head-margin(1.0, self.PB[0])
 
-  set-row(1, find-pins-by-regex(box, "^PC.*$", bank = io1-r)) ; A: left
-  set-column(1, find-pins-by-regex(box, "^PC.*$", bank = io1-r)) ; A: left
+  set-row(1, find-pins-by-regex(box, "^PC.*$", bank = io1-r))    ; C: right
+  set-column(1, find-pins-by-regex(box, "^PC.*$", bank = io1-r))
 
   ; Arrange power bank
   set-grid(box, [2,2], power-r)
   set-row(1, find-pins-by-regex(box, "VSS.*", bank = power-r))
   set-column(0, find-pins-by-regex(box, "VSS.*", bank = power-r))
-  ;set-alignment(S, find-pins-by-regex(box, "VSS.*", bank = power-r))
+  set-alignment(S, find-pins-by-regex(box, "VSS.*", bank = power-r))
 
   set-row(0, find-pins-by-regex(box, "VCAP.*", bank = power-r))
   set-column(0, find-pins-by-regex(box, "VCAP.*", bank = power-r))
-  ;set-alignment(N, find-pins-by-regex(box, "VCAP.*", bank = power-r))
+  set-alignment(N, find-pins-by-regex(box, "VCAP.*", bank = power-r))
 
   set-row(1, find-pins-by-regex(box, "VBAT.*"))
   set-column(1, find-pins-by-regex(box, "VBAT.*"))
@@ -257,8 +257,8 @@ public pcb-component component :
 
 ; copy/pasted from ethernet-io-lib
 defn get-rail-voltage (p:JITXObject, -- def-V:Double, margin:Double) -> Double :
-  ; TODO determine the communication interface here 
-  ;  Ideally - we are placing a property on the voltage rail pin 
+  ; TODO determine the communication interface here
+  ;  Ideally - we are placing a property on the voltage rail pin
   ;  and using that to communicate somehow.
   def-V * margin
 
@@ -268,11 +268,10 @@ val cap-margin = 2.0
 
 public pcb-module module :
 
-  ; each one gets a bulk cap
   port rail-VDD : power
   port rail-VDDA : power
-  port rail-VBAT : power     ; might not need a bulk cap
-  ; do i need a GND pin?
+  port rail-VBAT : power
+  ; [TODO] do i need a GND pin?
 
   net GND (rail-VDD.V-, rail-VDDA.V-, rail-VBAT.V-)
 
@@ -281,7 +280,7 @@ public pcb-module module :
   net (GND, stm.VSSA, stm.VSS[0], stm.VSS[1], stm.VSS[2], stm.VSS[3], stm.VSS[4])
 
   ;==================================================
-  ;== Define supports 
+  ;== Define supports
   ;==================================================
 
   ; generate supports
@@ -295,7 +294,7 @@ public pcb-module module :
   val VDD-voltage = get-rail-voltage(rail-VDD, def-V = 3.3, margin = cap-margin)
   val VDD-pins = [stm.VDD[0], stm.VDD[1], stm.VDD[2], stm.VDD[3]]
   val VSS-pins = [stm.VSS[0], stm.VSS[1], stm.VSS[2], stm.VSS[3]]
-  for (v in VDD-pins, g in VSS-pins) do : 
+  for (v in VDD-pins, g in VSS-pins) do :
     net (v, rail-VDD.V+)
     val c = insert-capacitor(
       v, g,
@@ -308,7 +307,7 @@ public pcb-module module :
   val cb-vdd = insert-capacitor(
     stm.VDD[0], stm.VSS[0],
     short-trace? = true
-    capacitance = 22.0e-6 
+    capacitance = 22.0e-6
     rated-voltage = AtLeast(VDD-voltage)
     esr = AtMost(1.0) ; TODO: idk what this means
   )
@@ -327,7 +326,7 @@ public pcb-module module :
   val cb-vdda = insert-capacitor(
     stm.VDDA, stm.VSSA,
     short-trace? = true
-    capacitance = 22.0e-6 
+    capacitance = 22.0e-6
     rated-voltage = AtLeast(VDD-voltage)
     esr = AtMost(1.0) ; TODO: idk what this means
   )
@@ -347,6 +346,7 @@ public pcb-module module :
   schematic-group(cvbat) = bypass-cap-VBAT
 
   ; have to use port here, `node` crashes the pin solver
+  ; TODO: is 8 a good number? should i keep is smaller until needed?
   port gnd-fanout:pin[8]
   for p in pins(gnd-fanout) :
     net (GND p)
