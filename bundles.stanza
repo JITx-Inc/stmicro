@@ -5,33 +5,33 @@ defpackage stmicro/bundles :
   import jitx/commands
 
 public pcb-bundle high-freq-oscillator :
-  pin in
-  pin out
+  port in
+  port out
 
 public pcb-bundle low-freq-oscillator :
-  pin in
-  pin out
+  port in
+  port out
 
 ; Custom i2s bundle:
 ; includes master clock, differentiates between data in/out
 
 public pcb-bundle I2S1_WS:
-  pin p
+  port p
 public pcb-bundle I2S1_CK:
-  pin p
+  port p
 public pcb-bundle I2S1_SD:
-  pin p
+  port p
 public pcb-bundle I2S1-MCK :
-  pin p
+  port p
 
 public pcb-enum stmicro/bundles/I2SPins :
   I2S-SDMI
   I2S-MCK
 
 public pcb-bundle i2s (pins:Tuple<stmicro/bundles/I2SPins>):
-  pin ck
-  pin ws
-  pin sdmo
+  port ck
+  port ws
+  port sdmo
   for p in pins do :
     switch(p) :
       I2S-SDMI : make-pin(`sdmi)
