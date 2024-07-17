@@ -13,3 +13,4 @@ pcb-module main :
 setup-board()
 set-main-module(main)
 view-schematic()
+view-board()
