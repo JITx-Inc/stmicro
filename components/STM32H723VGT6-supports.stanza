@@ -15,15 +15,15 @@ defpackage stmicro/components/STM32H723VGT6-supports :
   import stmicro/components/api
 
 public pcb-bundle pwm :
-  pin pwm
+  port pwm
 
 public defn STM32H723VGT6-supports (stm) :
   inside pcb-module :
 
     pcb-bundle SWD_SWDIO:
-      pin p
+      port p
     pcb-bundle SWD_SWDCLK:
-      pin p
+      port p
 
     supports SWD_SWDIO:
       SWD_SWDIO.p => stm.PA[13]
@@ -91,9 +91,9 @@ public defn STM32H723VGT6-supports (stm) :
         property(p.stm32-signal-name) = "GPIO"      
 
     pcb-bundle RCC_OSC_IN:
-      pin p
+      port p
     pcb-bundle RCC_OSC_OUT:
-      pin p
+      port p
 
     supports RCC_OSC_IN:
       RCC_OSC_IN.p => stm.PH[0]
@@ -114,9 +114,9 @@ public defn STM32H723VGT6-supports (stm) :
 
 
     pcb-bundle RCC_OSC32_IN:
-      pin p
+      port p
     pcb-bundle RCC_OSC32_OUT:
-      pin p
+      port p
 
     supports RCC_OSC32_IN:
       RCC_OSC32_IN.p => stm.PC[14]
@@ -138,19 +138,19 @@ public defn STM32H723VGT6-supports (stm) :
       property(out-pin.p.stm32-ip-name) = STMRTCIP
 
     pcb-bundle USART1_TX:
-      pin p
+      port p
     pcb-bundle USART1_RX:
-      pin p
+      port p
     pcb-bundle USART1_RTS:
-      pin p
+      port p
     pcb-bundle USART1_CTS:
-      pin p
+      port p
     pcb-bundle USART1_CK:
-      pin p
+      port p
     pcb-bundle USART1_NSS:
-      pin p
+      port p
     pcb-bundle USART1_DE:
-      pin p
+      port p
 
     supports USART1_TX:
       USART1_TX.p => stm.PA[9]
@@ -249,19 +249,19 @@ public defn STM32H723VGT6-supports (stm) :
       property(ck-pin.p.stm32-ip-name) = STMUSART1IP
 
     pcb-bundle USART2_TX:
-      pin p
+      port p
     pcb-bundle USART2_RX:
-      pin p
+      port p
     pcb-bundle USART2_RTS:
-      pin p
+      port p
     pcb-bundle USART2_CTS:
-      pin p
+      port p
     pcb-bundle USART2_CK:
-      pin p
+      port p
     pcb-bundle USART2_NSS:
-      pin p
+      port p
     pcb-bundle USART2_DE:
-      pin p
+      port p
 
     supports USART2_TX:
       USART2_TX.p => stm.PA[2]
@@ -338,9 +338,9 @@ public defn STM32H723VGT6-supports (stm) :
     ; 
 
     pcb-bundle I2C1_SCL:
-      pin p
+      port p
     pcb-bundle I2C1_SDA:
-      pin p
+      port p
 
     supports I2C1_SCL:
       I2C1_SCL.p => stm.PB[6] ; boot
@@ -364,9 +364,9 @@ public defn STM32H723VGT6-supports (stm) :
       property(sda-pin.p.stm32-ip-name) = STMI2C1IP
 
     pcb-bundle I2C2_SCL:
-      pin p
+      port p
     pcb-bundle I2C2_SDA:
-      pin p
+      port p
 
     supports I2C2_SCL:
       I2C2_SCL.p => stm.PB[10]
@@ -387,9 +387,9 @@ public defn STM32H723VGT6-supports (stm) :
 
 
     pcb-bundle I2C3_SCL:
-      pin p
+      port p
     pcb-bundle I2C3_SDA:
-      pin p
+      port p
 
     supports I2C3_SCL:
       I2C3_SCL.p => stm.PA[8]
@@ -409,9 +409,9 @@ public defn STM32H723VGT6-supports (stm) :
       ;property(sda-pin.p.stm32-ip-name) = STMI2C3IP
 
     pcb-bundle I2C4_SCL:
-      pin p
+      port p
     pcb-bundle I2C4_SDA:
-      pin p
+      port p
 
     supports I2C4_SCL:
       I2C4_SCL.p => stm.PD[12]
@@ -440,9 +440,9 @@ public defn STM32H723VGT6-supports (stm) :
       ;property(sda-pin.p.stm32-ip-name) = STMI2C4IP
 
     pcb-bundle I2C5_SCL:
-      pin p
+      port p
     pcb-bundle I2C5_SDA:
-      pin p
+      port p
 
     supports I2C5_SCL:
       I2C5_SCL.p => stm.PA[8]
@@ -466,13 +466,13 @@ public defn STM32H723VGT6-supports (stm) :
       ;property(sda-pin.p.stm32-ip-name) = STMI2C5IP
 
     pcb-bundle SPI1_MOSI:
-      pin p
+      port p
     pcb-bundle SPI1_MISO:
-      pin p
+      port p
     pcb-bundle SPI1_SCK:
-      pin p
+      port p
     pcb-bundle SPI1_NSS:
-      pin p
+      port p
 
     supports SPI1_NSS:
       SPI1_NSS.p => stm.PA[4]
@@ -522,13 +522,13 @@ public defn STM32H723VGT6-supports (stm) :
       property(cs-pin.p.stm32-ip-name) = STMSPI1IP
 
     pcb-bundle SPI2_MOSI:
-      pin p
+      port p
     pcb-bundle SPI2_MISO:
-      pin p
+      port p
     pcb-bundle SPI2_SCK:
-      pin p
+      port p
     pcb-bundle SPI2_NSS:
-      pin p
+      port p
 
     supports SPI2_NSS:
       SPI2_NSS.p => stm.PB[12]
@@ -579,13 +579,13 @@ public defn STM32H723VGT6-supports (stm) :
       ;property(cs-pin.p.pin-mode) = "NSS_Signal_Hard_Output"
 
     pcb-bundle SPI3_MOSI:
-      pin p
+      port p
     pcb-bundle SPI3_MISO:
-      pin p
+      port p
     pcb-bundle SPI3_SCK:
-      pin p
+      port p
     pcb-bundle SPI3_NSS:
-      pin p
+      port p
 
     supports SPI3_NSS:
       SPI3_NSS.p => stm.PA[4]
@@ -619,13 +619,13 @@ public defn STM32H723VGT6-supports (stm) :
       spi-with-cs().cs => cs-pin.p
 
     pcb-bundle SPI4_MOSI:
-      pin p
+      port p
     pcb-bundle SPI4_MISO:
-      pin p
+      port p
     pcb-bundle SPI4_SCK:
-      pin p
+      port p
     pcb-bundle SPI4_NSS:
-      pin p
+      port p
 
     supports SPI4_NSS:
       SPI4_NSS.p => stm.PE[4]
@@ -660,13 +660,13 @@ public defn STM32H723VGT6-supports (stm) :
       spi-with-cs().cs => cs-pin.p
 
     pcb-bundle SPI6_MOSI:
-      pin p
+      port p
     pcb-bundle SPI6_MISO:
-      pin p
+      port p
     pcb-bundle SPI6_SCK:
-      pin p
+      port p
     pcb-bundle SPI6_NSS:
-      pin p
+      port p
 
     supports SPI6_NSS:
       SPI6_NSS.p => stm.PA[0]
@@ -700,15 +700,15 @@ public defn STM32H723VGT6-supports (stm) :
       spi-with-cs().cs => cs-pin.p
 
     pcb-bundle I2S1-CK :
-      pin p
+      port p
     pcb-bundle I2S1-SDI :
-      pin p
+      port p
     pcb-bundle I2S1-SDO :
-      pin p
+      port p
     pcb-bundle I2S1-WS :
-      pin p
+      port p
     pcb-bundle I2S1-MCK :
-      pin p
+      port p
 
     supports I2S1-CK :
       I2S1-CK.p => stm.PA[5]
@@ -746,15 +746,15 @@ public defn STM32H723VGT6-supports (stm) :
       i2s-io.mck => mck.p
       
     pcb-bundle I2S2-CK :
-      pin p
+      port p
     pcb-bundle I2S2-SDI :
-      pin p
+      port p
     pcb-bundle I2S2-SDO :
-      pin p
+      port p
     pcb-bundle I2S2-WS :
-      pin p
+      port p
     pcb-bundle I2S2-MCK :
-      pin p
+      port p
 
     supports I2S2-CK :
       I2S2-CK.p => stm.PB[10]
@@ -797,15 +797,15 @@ public defn STM32H723VGT6-supports (stm) :
       
 
     pcb-bundle I2S3-CK :
-      pin p
+      port p
     pcb-bundle I2S3-SDI :
-      pin p
+      port p
     pcb-bundle I2S3-SDO :
-      pin p
+      port p
     pcb-bundle I2S3-WS :
-      pin p
+      port p
     pcb-bundle I2S3-MCK :
-      pin p
+      port p
 
     supports I2S3-CK :
       I2S3-CK.p => stm.PC[10]
@@ -843,15 +843,15 @@ public defn STM32H723VGT6-supports (stm) :
       i2s-io.mck => mck.p
 
     pcb-bundle I2S6-CK :
-      pin p
+      port p
     pcb-bundle I2S6-SDI :
-      pin p
+      port p
     pcb-bundle I2S6-SDO :
-      pin p
+      port p
     pcb-bundle I2S6-WS :
-      pin p
+      port p
     pcb-bundle I2S6-MCK :
-      pin p
+      port p
 
     supports I2S6-CK :
       I2S6-CK.p => stm.PA[5]
@@ -892,13 +892,13 @@ public defn STM32H723VGT6-supports (stm) :
 
 
     pcb-bundle TIM1-CH1 :
-      pin p
+      port p
     pcb-bundle TIM1-CH2 :
-      pin p
+      port p
     pcb-bundle TIM1-CH3 :
-      pin p
+      port p
     pcb-bundle TIM1-CH4 :
-      pin p
+      port p
     
     supports TIM1-CH1 :
       TIM1-CH1.p => stm.PE[9]
@@ -919,13 +919,13 @@ public defn STM32H723VGT6-supports (stm) :
     
     
     pcb-bundle TIM2-CH1 :
-      pin p
+      port p
     pcb-bundle TIM2-CH2 :
-      pin p
+      port p
     pcb-bundle TIM2-CH3 :
-      pin p
+      port p
     pcb-bundle TIM2-CH4 :
-      pin p
+      port p
     
     supports TIM2-CH1 :
       TIM2-CH1.p => stm.PA[0]
@@ -945,13 +945,13 @@ public defn STM32H723VGT6-supports (stm) :
       TIM2-CH4.p => stm.PA[3]
     
     pcb-bundle TIM3-CH1 :
-      pin p
+      port p
     pcb-bundle TIM3-CH2 :
-      pin p
+      port p
     pcb-bundle TIM3-CH3 :
-      pin p
+      port p
     pcb-bundle TIM3-CH4 :
-      pin p
+      port p
     
     supports TIM3-CH1 :
       TIM3-CH1.p => stm.PA[6]
@@ -975,13 +975,13 @@ public defn STM32H723VGT6-supports (stm) :
       TIM3-CH4.p => stm.PC[9]
     
     pcb-bundle TIM4-CH1 :
-      pin p
+      port p
     pcb-bundle TIM4-CH2 :
-      pin p
+      port p
     pcb-bundle TIM4-CH3 :
-      pin p
+      port p
     pcb-bundle TIM4-CH4 :
-      pin p
+      port p
     
     supports TIM4-CH1 :
       TIM4-CH1.p => stm.PD[12]
@@ -1001,13 +1001,13 @@ public defn STM32H723VGT6-supports (stm) :
       TIM4-CH4.p => stm.PB[9]
     
     pcb-bundle TIM5-CH1 :
-      pin p
+      port p
     pcb-bundle TIM5-CH2 :
-      pin p
+      port p
     pcb-bundle TIM5-CH3 :
-      pin p
+      port p
     pcb-bundle TIM5-CH4 :
-      pin p
+      port p
     
     supports TIM5-CH1 :
       TIM5-CH1.p => stm.PA[0]
@@ -1020,13 +1020,13 @@ public defn STM32H723VGT6-supports (stm) :
 
 
     pcb-bundle TIM8-CH1 :
-      pin p
+      port p
     pcb-bundle TIM8-CH2 :
-      pin p
+      port p
     pcb-bundle TIM8-CH3 :
-      pin p
+      port p
     pcb-bundle TIM8-CH4 :
-      pin p
+      port p
     
     supports TIM8-CH1 :
       TIM8-CH1.p => stm.PA[5]
@@ -1051,9 +1051,9 @@ public defn STM32H723VGT6-supports (stm) :
 
 
     pcb-bundle TIM12-CH1 :
-      pin p
+      port p
     pcb-bundle TIM12-CH2 :
-      pin p
+      port p
     
     supports TIM12-CH1 :
       TIM12-CH1.p => stm.PB[14]
@@ -1062,21 +1062,21 @@ public defn STM32H723VGT6-supports (stm) :
     
     
     pcb-bundle TIM13-CH1 :
-      pin p
+      port p
     
     supports TIM13-CH1 :
       TIM13-CH1.p => stm.PA[6]
     
     pcb-bundle TIM14-CH1 :
-      pin p
+      port p
     
     supports TIM14-CH1 :
       TIM14-CH1.p => stm.PA[7]
     
     pcb-bundle TIM15-CH1 :
-      pin p
+      port p
     pcb-bundle TIM15-CH2 :
-      pin p
+      port p
     
     supports TIM15-CH1 :
       TIM15-CH1.p => stm.PE[5]
@@ -1090,13 +1090,13 @@ public defn STM32H723VGT6-supports (stm) :
       TIM15-CH2.p => stm.PA[13]
 
     pcb-bundle TIM16-CH1 :
-      pin p
+      port p
     
     supports TIM16-CH1 :
       TIM16-CH1.p => stm.PB[8]
 
     pcb-bundle TIM17-CH1 :
-      pin p
+      port p
     
     supports TIM17-CH1 :
       TIM17-CH1.p => stm.PB[9]
