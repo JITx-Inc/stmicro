@@ -11,6 +11,7 @@ defpackage stmicro/components/STM32H723VGT6-supports :
     prefix(i2s) => STM-
   import jsl/protocols/usb
   import jsl/protocols/ethernet/MII/RMII
+  import jsl/protocols/ethernet/MII/MIIM
 
   import stmicro/components/api
 
@@ -1101,8 +1102,9 @@ public defn STM32H723VGT6-supports (stm) :
     supports TIM17-CH1 :
       TIM17-CH1.p => stm.PB[9]
 
-    ; Ethernet support (no rx error)
-    val eth = rmii(false)
+    ; Reduced Media Independent Interface
+    ;  No RX Error Signal Available.
+    val eth = rmii(add-rx-error = false)
     supports eth :
       eth.ref-clk => stm.PA[1]
       eth.crs-dv => stm.PA[7]
@@ -1113,6 +1115,12 @@ public defn STM32H723VGT6-supports (stm) :
 
       eth.txd[0] => stm.PB[12]
       eth.txd[1] => stm.PB[13]
+
+    ; Media Independent Interface Management 
+    ;  Protocol
+    supports miim:
+      miim.mdc => stm.PC[1]
+      miim.mdio => stm.PA[2]
 
     ; USB support
     supports usb-data :
