@@ -3,5 +3,4 @@ include? ".slm/stanza.proj"  ; Dependencies
 
 pkg-cache: ".slm/pkg-cache"
 
-packages stmicro/components/* defined-in "components/"
-packages stmicro/* defined-in "."
+packages stmicro/* defined-in "src/"

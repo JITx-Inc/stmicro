@@ -3,12 +3,35 @@ defpackage main :
   import core
   import jitx
   import jitx/commands
+  import jitx/parts/query-api
 
+  import jsl/bundles
   import jsl/examples/protocols/common/example-board
 
 ; tiny wrapper to view schematic
 pcb-module main :
   inst c : stmicro/components/STM32H723VGT6/module
+  require p:minimal-uart() from c
+
+  inst R : create-resistor(
+    resistance = 1000.0,
+    precision = (1 %)
+  )
+
+  net (R.p[1], p.tx)
+  net (R.p[2], p.rx)
+
+
+  require p2:minimal-uart() from c
+
+  inst R2 : create-resistor(
+    resistance = 1000.0,
+    precision = (1 %)
+  )
+
+  net (R2.p[1], p2.tx)
+  net (R2.p[2], p2.rx)
+
 
 setup-board()
 set-main-module(main)
