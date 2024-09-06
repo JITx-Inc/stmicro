@@ -41,6 +41,12 @@ public defn STM32H723VGT6-supports (stm) :
       property(swdio.p.stm32-pin-mode)  = STMSerialWireDebugMode
       property(swdclk.p.stm32-pin-mode) = STMSerialWireDebugMode
 
+    supports jtag:
+      jtag.tck => stm.PA[14]
+      jtag.tdi => stm.PA[15]
+      jtag.tdo => stm.PB[3]
+      jtag.tms => stm.PA[13]
+
     supports reset:
       reset.reset => stm.NRST
 
@@ -1116,7 +1122,7 @@ public defn STM32H723VGT6-supports (stm) :
       eth.txd[0] => stm.PB[12]
       eth.txd[1] => stm.PB[13]
 
-    ; Media Independent Interface Management 
+    ; Media Independent Interface Management
     ;  Protocol
     supports miim:
       miim.mdc => stm.PC[1]
