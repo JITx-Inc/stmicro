@@ -5,16 +5,14 @@ defpackage stmicro/components/STM32H723VGT6 :
   import core
   import jitx
   import jitx/commands
-  import jitx/parts/query-api
+  import jitx/parts
 
-  import jsl/landpatterns/quad
-  import jsl/landpatterns/QFP
-  import jsl/landpatterns/leads
-  import jsl/landpatterns/packages
+  import jsl/landpatterns
   import jsl/symbols
-  import jsl/symbols/box-symbol/utils
   import jsl/bundles
   import jsl/protocols/usb
+  import jsl/circuits/Bypass
+  import jsl/circuits/Pullups
 
   import stmicro/components/STM32H723VGT6-supports
 
@@ -37,8 +35,7 @@ val STM-LQFP100 =
   )
 
 
-; component
-public pcb-component component :
+public pcb-component device :
   name = "STM32H723VGT6"
   description = "1MB 1.71V~3.6V ARM-MSeries 176KB 550MHz FLASH 80 LQFP-100(14x14)  Microcontroller Units (MCUs/MPUs/SOCs) ROHS"
   manufacturer = "STMICROELECTRONICS"
@@ -265,22 +262,27 @@ defn get-rail-voltage (p:JITXObject, -- def-V:Double, margin:Double) -> Double :
   ;  and using that to communicate somehow.
   def-V * margin
 
-; Margin Relative to the intended voltage.
-; TODO: figure out what this should be
-val cap-margin = 2.0
-
 public pcb-module module :
 
   port rail-VDD : power
   port rail-VDDA : power
   port rail-VBAT : power
-  ; [TODO] do i need a GND pin?
 
   net GND (rail-VDD.V-, rail-VDDA.V-, rail-VBAT.V-)
 
-  inst stm : component
+  port BOOT
 
-  net (GND, stm.VSSA, stm.VSS[0], stm.VSS[1], stm.VSS[2], stm.VSS[3], stm.VSS[4])
+  inst stm : device
+
+  net (GND, stm.VSSA)
+  for p in ports(stm.VSS) do:
+    net (GND, p)
+
+  ;  The BOOT0 pin is used to control whether the MCU
+  ; runs the bootloader on reset or not. By pulling, this
+  ; signal high - we can force bootloader mode.
+  net (stm.BOOT[0], BOOT)
+  insert-pulldown(stm.BOOT[0], GND)
 
   ;==================================================
   ;== Define supports
@@ -292,7 +294,7 @@ public pcb-module module :
   ;==================================================
   ;== Insert decoupling capacitors
   ;==================================================
-  ; See AN4938, Section 2.2 for information 
+  ; See AN4938, Section 2.2 for information
   ;  on decoupling capacitors.
 
   val bypass-query = CapacitorQuery(
@@ -301,82 +303,64 @@ public pcb-module module :
     sort! = SortKey(rated-voltage = Increasing)
   )
 
-  ; rail-VDD
+  ; Voltage Margin Relative to the intended voltage.
+  ;  This helps set the minimum voltage range to search.
+  val cap-margin = 2.0
+  ; Set a maximum voltage search range for components
+  val max-voltage = 16.0
+
   val VDD-voltage = get-rail-voltage(rail-VDD, def-V = 3.3, margin = cap-margin)
-  val VDD-pins = [stm.VDD[0], stm.VDD[1], stm.VDD[2], stm.VDD[3]]
-  val VSS-pins = [stm.VSS[0], stm.VSS[1], stm.VSS[2], stm.VSS[3]]
-  for (v in VDD-pins, g in VSS-pins) do :
-    net (v, rail-VDD.V+)
-    val c = insert-capacitor(
-      v, g,
-      bypass-query,
-      short-trace? = true
-      capacitance = 1.0e-9,
-      rated-voltage = AtLeast(VDD-voltage)
-    )
-    schematic-group(c) = bypass-cap-IO
-  ; TODO: is the GND pin OK?
-  val cb-vdd = insert-capacitor(
-    stm.VDD[0], stm.VSS[0],
+  val VDDA-voltage = get-rail-voltage(rail-VDDA, def-V = 3.3, margin = cap-margin)
+  val BAT-voltage = get-rail-voltage(rail-VBAT, def-V = 3.3, margin = cap-margin)
+
+  val max-rail-V = maximum([VDD-voltage, VDDA-voltage, BAT-voltage])
+
+  ; Per Pin Decoupler
+  val fine-C = create-capacitor(
     bypass-query,
-    short-trace? = true
-    capacitance = 4.7e-6
-    rated-voltage = AtLeast(VDD-voltage)
+    capacitance = 0.1e-6,
+    rated-voltage = Interval(max-rail-V, max-voltage)
   )
+
+  ; Bulk Capacitance - We place one of these per rail.
+  val bulk-C = create-capacitor(
+    bypass-query,
+    capacitance = 4.7e-6
+    rated-voltage = Interval(max-rail-V, max-voltage)
+  )
+
+  ; rail-VDD
+  for v in ports(stm.VDD) do :
+    net (v, rail-VDD.V+)
+    val c = insert-bypass(v, GND, elem-type = fine-C)
+    schematic-group(c) = bypass-cap-IO
+
+  val cb-vdd = insert-bypass(stm.VDD[0], stm.VSS[0], elem-type = bulk-C)
   schematic-group(cb-vdd) = bypass-cap-IO
 
   ; rail-VDDA
-  val VDDA-voltage = get-rail-voltage(rail-VDDA, def-V = 3.3, margin = cap-margin)
   net (stm.VDDA, rail-VDDA.V+)
-  val cvdda = insert-capacitor(
-    stm.VDDA, stm.VSSA,
-    bypass-query,
-    short-trace? = true
-    capacitance = 1.0e-9,
-    rated-voltage = AtLeast(VDDA-voltage)
-  )
-  schematic-group(cvdda) = bypass-cap-VDDA
-  val cb-vdda = insert-capacitor(
-    stm.VDDA, stm.VSSA,
-    bypass-query,
-    short-trace? = true
-    capacitance = 1.0e-6
-    rated-voltage = AtLeast(VDD-voltage)
-  )
-  schematic-group(cb-vdda) = bypass-cap-VDDA
+  val cvdda = insert-bypass(stm.VDDA, stm.VSSA, elem-type = fine-C)
+  val cb-vdda = insert-bypass(stm.VDDA, stm.VSSA, elem-type = bulk-C)
+  schematic-group([cvdda, cb-vdda]) = bypass-cap-VDDA
 
   ; rail-VBAT
   ; no bulk decoupler
-  val BAT-voltage = get-rail-voltage(rail-VBAT, def-V = 3.3, margin = cap-margin)
   net (stm.VBAT, rail-VBAT.V+)
-  ; TODO: is this GND pin ok?
-  val cvbat = insert-capacitor(
-    stm.VBAT, stm.VSS[0],
-    bypass-query,
-    short-trace? = true
-    capacitance = 1.0e-9,
-    rated-voltage = AtLeast(VDDA-voltage)
-  )
+  val cvbat = insert-bypass(stm.VBAT, stm.VSS[0], elem-type = fine-C)
   schematic-group(cvbat) = bypass-cap-VBAT
 
-  net VCAP (stm.VCAP[0], stm.VCAP[1])
-  val vcap-0 = insert-capacitor(
-    stm.VCAP[0], stm.VSS[0]
+  val VCAP-C = create-capacitor(
     bypass-query,
-    short-trace? = true
     capacitance = 2.2e-6,
-    rated-voltage = AtLeast(VDD-voltage)
+    rated-voltage = Interval(max-rail-V, max-voltage)
   )
 
-  val vcap-1 = insert-capacitor(
-    stm.VCAP[1], stm.VSS[0]
-    bypass-query,
-    short-trace? = true
-    capacitance = 2.2e-6,
-    rated-voltage = AtLeast(VDD-voltage)
-  )
-
-  schematic-group([vcap-0, vcap-1]) = vcap-caps
+  net VCAP ()
+  for p in ports(stm.VCAP) do :
+    net (VCAP, p)
+    val c = insert-bypass(p, stm.VSS[0], elem-type = VCAP-C)
+    schematic-group(c) = vcap-caps
 
   ; have to use port here, `node` crashes the pin solver
   ; TODO: is 8 a good number? should i keep is smaller until needed?
