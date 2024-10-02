@@ -34,5 +34,5 @@ public pcb-bundle i2s (pins:Tuple<stmicro/bundles/I2SPins>):
   port sdmo
   for p in pins do :
     switch(p) :
-      I2S-SDMI : make-pin(`sdmi)
-      I2S-MCK  : make-pin(`mck)
+      I2S-SDMI : make-port(`sdmi)
+      I2S-MCK  : make-port(`mck)
