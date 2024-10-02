@@ -268,15 +268,19 @@ public pcb-module module :
   port rail-VDDA : power
   port rail-VBAT : power
 
+  port VREF : power
+
   net GND (rail-VDD.V-, rail-VDDA.V-, rail-VBAT.V-)
 
   port BOOT
 
-  inst stm : device
+  public inst stm : device
 
-  net (GND, stm.VSSA)
+  net (GND, stm.VSSA, VREF.V-)
   for p in ports(stm.VSS) do:
     net (GND, p)
+
+  net (stm.VREF+, VREF.V+)
 
   ;  The BOOT0 pin is used to control whether the MCU
   ; runs the bootloader on reset or not. By pulling, this
@@ -320,6 +324,7 @@ public pcb-module module :
     bypass-query,
     capacitance = 0.1e-6,
     rated-voltage = Interval(max-rail-V, max-voltage)
+    case = ["0402"]
   )
 
   ; Bulk Capacitance - We place one of these per rail.
@@ -327,6 +332,7 @@ public pcb-module module :
     bypass-query,
     capacitance = 4.7e-6
     rated-voltage = Interval(max-rail-V, max-voltage)
+    case = ["0603", "0805", "1206"]
   )
 
   ; rail-VDD
@@ -342,13 +348,15 @@ public pcb-module module :
   net (stm.VDDA, rail-VDDA.V+)
   val cvdda = insert-bypass(stm.VDDA, stm.VSSA, elem-type = fine-C)
   val cb-vdda = insert-bypass(stm.VDDA, stm.VSSA, elem-type = bulk-C)
-  schematic-group([cvdda, cb-vdda]) = bypass-cap-VDDA
+  val cvref = insert-bypass(stm.VREF+, stm.VSSA, elem-type = fine-C)
+  schematic-group([cvdda, cb-vdda, cvref]) = bypass-cap-VDDA
 
   ; rail-VBAT
   ; no bulk decoupler
   net (stm.VBAT, rail-VBAT.V+)
   val cvbat = insert-bypass(stm.VBAT, stm.VSS[0], elem-type = fine-C)
   schematic-group(cvbat) = bypass-cap-VBAT
+
 
   val VCAP-C = create-capacitor(
     bypass-query,
