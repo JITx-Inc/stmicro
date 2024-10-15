@@ -6,12 +6,9 @@ defpackage stmicro/components/STM32H723VGT6-supports :
   import jitx
   import jitx/commands
 
-  import jsl/bundles
+  import jsl
   import stmicro/bundles with:
     prefix(i2s) => STM-
-  import jsl/protocols/usb
-  import jsl/protocols/ethernet/MII/RMII
-  import jsl/protocols/ethernet/MII/MIIM
 
   import stmicro/components/api
 
