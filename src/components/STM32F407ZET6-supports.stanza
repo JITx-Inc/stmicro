@@ -38,7 +38,6 @@ public defn STM32F407ZET6-supports (stm) :
     for (p in ADC12-LIST, i in 0 to false) do :
       supports adc:
         adc.adc => p
-        ;property(swdio.p.stm32-ip-name) = STMADC2IP
 
     for i in ADC3-UNIQUE-LIST do :
       val p = ADC3-LIST[i]
@@ -83,20 +82,10 @@ public defn STM32F407ZET6-supports (stm) :
     supports high-freq-oscillator:
       high-freq-oscillator.in => stm.PH[0]
       high-freq-oscillator.out => stm.PH[1]
-      property(stm.PH[0].stm32-signal-name) = "RCC_OSC_IN"
-      property(stm.PH[1].stm32-signal-name) = "RCC_OSC_OUT"
-      property(stm.PH[0].stm32-pin-mode) = STMHSEExternalMode
-      property(stm.PH[1].stm32-pin-mode) = STMHSEExternalMode
 
     supports low-freq-oscillator:
       low-freq-oscillator.in => stm.PC[14]
       low-freq-oscillator.out => stm.PC[15]
-      property(stm.PC[14].stm32-signal-name) = "RCC_OSC32_IN"
-      property(stm.PC[15].stm32-signal-name) = "RCC_OSC32_OUT"
-      property(stm.PC[14].stm32-pin-mode) = STMLSEExternalMode
-      property(stm.PC[15].stm32-pin-mode) = STMLSEExternalMode
-      property(stm.PC[14].stm32-ip-name) = STMRTCIP
-      property(stm.PC[15].stm32-ip-name) = STMRTCIP
 
     pcb-bundle USART1_TX:
       port p
@@ -105,6 +94,8 @@ public defn STM32F407ZET6-supports (stm) :
     pcb-bundle USART1_RTS:
       port p
     pcb-bundle USART1_CTS:
+      port p
+    pcb-bundle USART1_CK:
       port p
 
     supports USART1_TX:
@@ -119,23 +110,21 @@ public defn STM32F407ZET6-supports (stm) :
 
     supports USART1_RTS:
       USART1_RTS.p => stm.PA[12]
+
     supports USART1_CTS:
       USART1_CTS.p => stm.PA[11]
+
+    supports USART1_CK:
+      USART1_CK.p => stm.PA[8]
 
     supports minimal-uart():
       require tx-pin: USART1_TX
       require rx-pin: USART1_RX
       minimal-uart().tx => tx-pin.p
       minimal-uart().rx => rx-pin.p
-      property(tx-pin.p.stm32-signal-name) = "USART1_TX"
-      property(rx-pin.p.stm32-signal-name) = "USART1_RX"
-      property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(tx-pin.p.stm32-ip-name) = STMUSART1IP
-      property(rx-pin.p.stm32-ip-name) = STMUSART1IP
 
-    val uart-fc = uart(UART-RX, UART-TX, UART-RTS, UART-CTS)
-    supports uart-fc :
+    val uart-fc = uart(UART-TX, UART-RX, UART-RTS, UART-CTS)
+    supports uart-fc:
       require tx-pin: USART1_TX
       require rx-pin: USART1_RX
       require rts-pin: USART1_RTS
@@ -145,47 +134,248 @@ public defn STM32F407ZET6-supports (stm) :
       uart-fc.rts => rts-pin.p
       uart-fc.cts => cts-pin.p
 
-    ;   val uart-fc-ck = uart(UART-RX, UART-TX, UART-RTS, UART-CTS, UART-CK)
-
-    ;   supports uart-fc-ck :
-    ;     require tx-pin: USART1_TX
-    ;     require rx-pin: USART1_RX
-    ;     require rts-pin: USART1_RTS
-    ;     require cts-pin: USART1_CTS
-    ;     require ck-pin: USART1_CK
-    ;     uart-fc-ck.tx => tx-pin.p
-    ;     uart-fc-ck.rx => rx-pin.p
-    ;     uart-fc-ck.rts => rts-pin.p
-    ;     uart-fc-ck.cts => cts-pin.p
-    ;     uart-fc-ck.ck => ck-pin.p
+    val uart-ck = uart(UART-RX, UART-TX, UART-RTS, UART-CTS, UART-CK)
+    supports uart-ck:
+      require tx-pin: USART1_TX
+      require rx-pin: USART1_RX
+      require rts-pin: USART1_RTS
+      require cts-pin: USART1_CTS
+      require ck-pin: USART1_CK
+      uart-ck.tx => tx-pin.p
+      uart-ck.rx => rx-pin.p
+      uart-ck.rts => rts-pin.p
+      uart-ck.cts => cts-pin.p
+      uart-ck.ck => ck-pin.p
 
     pcb-bundle USART2_TX:
       port p
     pcb-bundle USART2_RX:
+      port p
+    pcb-bundle USART2_RTS:
+      port p
+    pcb-bundle USART2_CTS:
+      port p
+    pcb-bundle USART2_CK:
       port p
 
     supports USART2_TX:
       USART2_TX.p => stm.PA[2]
     supports USART2_TX:
       USART2_TX.p => stm.PD[5]
+
     supports USART2_RX:
       USART2_RX.p => stm.PA[3]
     supports USART2_RX:
       USART2_RX.p => stm.PD[6]
+
+    supports USART2_RTS:
+      USART2_RTS.p => stm.PA[1]
+
+    supports USART2_CTS:
+      USART2_CTS.p => stm.PA[0]
+
+    supports USART2_CK:
+      USART2_CK.p => stm.PA[4]
 
     supports minimal-uart():
       require tx-pin: USART2_TX
       require rx-pin: USART2_RX
       minimal-uart().tx => tx-pin.p
       minimal-uart().rx => rx-pin.p
-      property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(tx-pin.p.stm32-signal-name) = "USART2_TX"
-      property(rx-pin.p.stm32-signal-name) = "USART2_RX"
-      property(tx-pin.p.stm32-ip-name) = STMUSART2IP
-      property(rx-pin.p.stm32-ip-name) = STMUSART2IP  
-      property(stm.PA[2].SUPPORTS-BOOT) = true
-      property(stm.PA[3].SUPPORTS-BOOT) = true
+
+    supports uart-fc:
+      require tx-pin: USART2_TX
+      require rx-pin: USART2_RX
+      require rts-pin: USART2_RTS
+      require cts-pin: USART2_CTS
+      uart-fc.tx => tx-pin.p
+      uart-fc.rx => rx-pin.p
+      uart-fc.rts => rts-pin.p
+      uart-fc.cts => cts-pin.p
+
+    supports uart-ck:
+      require tx-pin: USART2_TX
+      require rx-pin: USART2_RX
+      require rts-pin: USART2_RTS
+      require cts-pin: USART2_CTS
+      require ck-pin: USART2_CK
+      uart-ck.tx => tx-pin.p
+      uart-ck.rx => rx-pin.p
+      uart-ck.rts => rts-pin.p
+      uart-ck.cts => cts-pin.p
+      uart-ck.ck => ck-pin.p
+
+    pcb-bundle USART3_TX:
+      port p
+    pcb-bundle USART3_RX:
+      port p
+    pcb-bundle USART3_RTS:
+      port p
+    pcb-bundle USART3_CTS:
+      port p
+    pcb-bundle USART3_CK:
+      port p
+
+    supports USART3_TX:
+      USART3_TX.p => stm.PB[10]
+    supports USART3_TX:
+      USART3_TX.p => stm.PC[10]
+    supports USART3_TX:
+      USART3_TX.p => stm.PD[8]
+
+    supports USART3_RX:
+      USART3_RX.p => stm.PB[11]
+    supports USART3_RX:
+      USART3_RX.p => stm.PC[11]
+    supports USART3_RX:
+      USART3_RX.p => stm.PD[9]
+
+    supports USART3_RTS:
+      USART3_RTS.p => stm.PB[14]
+    supports USART3_RTS:
+      USART3_RTS.p => stm.PD[12]
+
+    supports USART3_CTS:
+      USART3_CTS.p => stm.PB[13]
+    supports USART3_CTS:
+      USART3_CTS.p => stm.PD[11]
+
+    supports USART3_CK:
+      USART3_CK.p => stm.PB[12]
+    supports USART3_CK:
+      USART3_CK.p => stm.PC[12]
+    supports USART3_CK:
+      USART3_CK.p => stm.PD[10]
+
+    supports minimal-uart():
+      require tx-pin: USART3_TX
+      require rx-pin: USART3_RX
+      minimal-uart().tx => tx-pin.p
+      minimal-uart().rx => rx-pin.p
+
+    supports uart-fc:
+      require tx-pin: USART3_TX
+      require rx-pin: USART3_RX
+      require rts-pin: USART3_RTS
+      require cts-pin: USART3_CTS
+      uart-fc.tx => tx-pin.p
+      uart-fc.rx => rx-pin.p
+      uart-fc.rts => rts-pin.p
+      uart-fc.cts => cts-pin.p
+
+    supports uart-ck:
+      require tx-pin: USART3_TX
+      require rx-pin: USART3_RX
+      require rts-pin: USART3_RTS
+      require cts-pin: USART3_CTS
+      require ck-pin: USART3_CK
+      uart-ck.tx => tx-pin.p
+      uart-ck.rx => rx-pin.p
+      uart-ck.rts => rts-pin.p
+      uart-ck.cts => cts-pin.p
+      uart-ck.ck => ck-pin.p
+
+    pcb-bundle USART6_TX:
+      port p
+    pcb-bundle USART6_RX:
+      port p
+    pcb-bundle USART6_RTS:
+      port p
+    pcb-bundle USART6_CTS:
+      port p
+    pcb-bundle USART6_CK:
+      port p
+
+    supports USART6_TX:
+      USART6_TX.p => stm.PC[6]
+    supports USART6_TX:
+      USART6_TX.p => stm.PG[14]
+
+    supports USART6_RX:
+      USART6_RX.p => stm.PC[7]
+    supports USART6_RX:
+      USART6_RX.p => stm.PG[9]
+
+    supports USART6_RTS:
+      USART6_RTS.p => stm.PG[8]
+    supports USART6_RTS:
+      USART6_RTS.p => stm.PG[12]
+
+    supports USART6_CTS:
+      USART6_CTS.p => stm.PG[13]
+    supports USART6_CTS:
+      USART6_CTS.p => stm.PG[15]
+
+    supports USART6_CK:
+      USART6_CK.p => stm.PC[8]
+    supports USART6_CK:
+      USART6_CK.p => stm.PG[7]
+
+    supports minimal-uart():
+      require tx-pin: USART6_TX
+      require rx-pin: USART6_RX
+      minimal-uart().tx => tx-pin.p
+      minimal-uart().rx => rx-pin.p
+
+    supports uart-fc:
+      require tx-pin: USART6_TX
+      require rx-pin: USART6_RX
+      require rts-pin: USART6_RTS
+      require cts-pin: USART6_CTS
+      uart-fc.tx => tx-pin.p
+      uart-fc.rx => rx-pin.p
+      uart-fc.rts => rts-pin.p
+      uart-fc.cts => cts-pin.p
+
+    supports uart-ck:
+      require tx-pin: USART6_TX
+      require rx-pin: USART6_RX
+      require rts-pin: USART6_RTS
+      require cts-pin: USART6_CTS
+      require ck-pin: USART6_CK
+      uart-ck.tx => tx-pin.p
+      uart-ck.rx => rx-pin.p
+      uart-ck.rts => rts-pin.p
+      uart-ck.cts => cts-pin.p
+      uart-ck.ck => ck-pin.p
+
+    pcb-bundle UART4_TX:
+      port p
+    pcb-bundle UART4_RX:
+      port p
+
+    supports UART4_TX:
+      UART4_TX.p => stm.PA[0]
+    supports UART4_TX:
+      UART4_TX.p => stm.PC[10]
+
+    supports UART4_RX:
+      UART4_RX.p => stm.PA[1]
+    supports UART4_RX:
+      UART4_RX.p => stm.PC[11]
+
+    supports minimal-uart():
+      require tx-pin: UART4_TX
+      require rx-pin: UART4_RX
+      minimal-uart().tx => tx-pin.p
+      minimal-uart().rx => rx-pin.p
+
+    pcb-bundle UART5_TX:
+      port p
+    pcb-bundle UART5_RX:
+      port p
+
+    supports UART5_TX:
+      UART5_TX.p => stm.PC[12]
+
+    supports UART5_RX:
+      UART5_RX.p => stm.PD[2]
+
+    supports minimal-uart():
+      require tx-pin: UART5_TX
+      require rx-pin: UART5_RX
+      minimal-uart().tx => tx-pin.p
+      minimal-uart().rx => rx-pin.p
 
     pcb-bundle I2C1_SCL:
       port p
@@ -196,6 +386,7 @@ public defn STM32F407ZET6-supports (stm) :
       I2C1_SCL.p => stm.PB[6]
     supports I2C1_SCL:
       I2C1_SCL.p => stm.PB[8]
+
     supports I2C1_SDA:
       I2C1_SDA.p => stm.PB[7]
     supports I2C1_SDA:
@@ -206,12 +397,6 @@ public defn STM32F407ZET6-supports (stm) :
       require sda-pin: I2C1_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      property(scl-pin.p.stm32-signal-name) = "I2C1_SCL"
-      property(sda-pin.p.stm32-signal-name) = "I2C1_SDA"
-      property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      property(scl-pin.p.stm32-ip-name) = STMI2C1IP
-      property(sda-pin.p.stm32-ip-name) = STMI2C1IP
 
     pcb-bundle I2C2_SCL:
       port p
@@ -219,25 +404,38 @@ public defn STM32F407ZET6-supports (stm) :
       port p
 
     supports I2C2_SCL:
-      I2C2_SCL.p => stm.PF[1]
-    supports I2C2_SCL:
       I2C2_SCL.p => stm.PB[10]
-    supports I2C2_SDA:
-      I2C2_SDA.p => stm.PF[0]
+    supports I2C2_SCL:
+      I2C2_SCL.p => stm.PF[1]
+
     supports I2C2_SDA:
       I2C2_SDA.p => stm.PB[11]
+    supports I2C2_SDA:
+      I2C2_SDA.p => stm.PF[0]
 
     supports i2c:
       require scl-pin: I2C2_SCL
       require sda-pin: I2C2_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      property(scl-pin.p.stm32-signal-name) = "I2C2_SCL"
-      property(sda-pin.p.stm32-signal-name) = "I2C2_SDA"
-      property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      property(scl-pin.p.stm32-ip-name) = STMI2C2IP
-      property(sda-pin.p.stm32-ip-name) = STMI2C2IP
+
+    pcb-bundle I2C3_SCL:
+      port p
+    pcb-bundle I2C3_SDA:
+      port p
+
+    supports I2C3_SCL:
+      I2C3_SCL.p => stm.PA[8]
+
+    supports I2C3_SDA:
+      I2C3_SDA.p => stm.PC[9]
+
+    supports i2c:
+      require scl-pin: I2C3_SCL
+      require sda-pin: I2C3_SDA
+      i2c.scl => scl-pin.p
+      i2c.sda => sda-pin.p
+
 
     pcb-bundle SPI1_MOSI:
       port p
@@ -252,44 +450,39 @@ public defn STM32F407ZET6-supports (stm) :
       SPI1_NSS.p => stm.PA[4]
     supports SPI1_NSS:
       SPI1_NSS.p => stm.PA[15]
+
     supports SPI1_SCK:
       SPI1_SCK.p => stm.PA[5]
     supports SPI1_SCK:
       SPI1_SCK.p => stm.PB[3]
+
     supports SPI1_MOSI:
       SPI1_MOSI.p => stm.PA[7]
     supports SPI1_MOSI:
       SPI1_MOSI.p => stm.PB[5]
+
     supports SPI1_MISO:
       SPI1_MISO.p => stm.PA[6]
     supports SPI1_MISO:
       SPI1_MISO.p => stm.PB[4]
 
     supports spi-with-cs():
-      require sdo-pin: SPI1_MOSI
-      require sdi-pin: SPI1_MISO
+      require copi-pin: SPI1_MOSI
+      require cipo-pin: SPI1_MISO
       require sck-pin: SPI1_SCK
-      require cs-pin: SPI1_NSS ; how to make this optional?
-      spi-with-cs().cipo => sdo-pin.p
-      spi-with-cs().copi => sdi-pin.p
+      require cs-pin: SPI1_NSS
+      spi-with-cs().copi => copi-pin.p
+      spi-with-cs().cipo => cipo-pin.p
       spi-with-cs().sck => sck-pin.p
-      spi-with-cs().cs => cs-pin.p  
-      property(stm.PA[4].SUPPORTS-BOOT) = true
-      property(stm.PA[5].SUPPORTS-BOOT) = true
-      property(stm.PA[6].SUPPORTS-BOOT) = true
-      property(stm.PA[7].SUPPORTS-BOOT) = true  
-      property(sdo-pin.p.stm32-signal-name) = "SPI1_MOSI"
-      property(sdi-pin.p.stm32-signal-name) = "SPI1_MISO"
-      property(sck-pin.p.stm32-signal-name) = "SPI1_SCK"
-      property(cs-pin.p.stm32-signal-name) = "SPI1_NSS"
-      property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sck-pin.p.stm32-pin-mode) = STMSPIMode
-      property(cs-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdo-pin.p.stm32-ip-name) = STMSPI1IP
-      property(sdi-pin.p.stm32-ip-name) = STMSPI1IP
-      property(sck-pin.p.stm32-ip-name) = STMSPI1IP
-      property(cs-pin.p.stm32-ip-name) = STMSPI1IP
+      spi-with-cs().cs => cs-pin.p
+
+    supports std-spi():
+      require copi-pin: SPI1_MOSI
+      require cipo-pin: SPI1_MISO
+      require sck-pin: SPI1_SCK
+      std-spi().copi => copi-pin.p
+      std-spi().cipo => cipo-pin.p
+      std-spi().sck => sck-pin.p
 
     pcb-bundle SPI2_MOSI:
       port p
@@ -301,51 +494,234 @@ public defn STM32F407ZET6-supports (stm) :
       port p
 
     supports SPI2_NSS:
-      SPI2_NSS.p => stm.PB[12]
-    supports SPI2_NSS:
       SPI2_NSS.p => stm.PB[9]
+    supports SPI2_NSS:
+      SPI2_NSS.p => stm.PB[12]
+
     supports SPI2_SCK:
       SPI2_SCK.p => stm.PB[10]
     supports SPI2_SCK:
       SPI2_SCK.p => stm.PB[13]
-    supports SPI2_MOSI:
-      SPI2_MOSI.p => stm.PC[3]
+
     supports SPI2_MOSI:
       SPI2_MOSI.p => stm.PB[15]
-    supports SPI2_MISO:
-      SPI2_MISO.p => stm.PC[2]
+
     supports SPI2_MISO:
       SPI2_MISO.p => stm.PB[14]
 
     supports spi-with-cs():
-      require sdo-pin: SPI2_MOSI
-      require sdi-pin: SPI2_MISO
+      require copi-pin: SPI2_MOSI
+      require cipo-pin: SPI2_MISO
       require sck-pin: SPI2_SCK
-      require cs-pin: SPI2_NSS ; how to make this optional?
-      spi-with-cs().cipo => sdo-pin.p
-      spi-with-cs().copi => sdi-pin.p
+      require cs-pin: SPI2_NSS
+      spi-with-cs().copi => copi-pin.p
+      spi-with-cs().cipo => cipo-pin.p
       spi-with-cs().sck => sck-pin.p
       spi-with-cs().cs => cs-pin.p
-      property(sdo-pin.p.stm32-signal-name) = "SPI2_MOSI"
-      property(sdi-pin.p.stm32-signal-name) = "SPI2_MISO"
-      property(sck-pin.p.stm32-signal-name) = "SPI2_SCK"
-      property(cs-pin.p.stm32-signal-name) = "SPI2_NSS"
-      property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sck-pin.p.stm32-pin-mode) = STMSPIMode
-      property(cs-pin.p.stm32-pin-mode) = STMSPIMode
-      property(sdo-pin.p.stm32-ip-name) = STMSPI2IP
-      property(sdi-pin.p.stm32-ip-name) = STMSPI2IP
-      property(sck-pin.p.stm32-ip-name) = STMSPI2IP
-      property(cs-pin.p.stm32-ip-name) = STMSPI2IP
-      ;property(cs-pin.p.pin-mode) = "NSS_Signal_Hard_Output"
 
+    supports std-spi():
+      require copi-pin: SPI2_MOSI
+      require cipo-pin: SPI2_MISO
+      require sck-pin: SPI2_SCK
+      std-spi().copi => copi-pin.p
+      std-spi().cipo => cipo-pin.p
+      std-spi().sck => sck-pin.p
+
+    pcb-bundle SPI3_MOSI:
+      port p
+    pcb-bundle SPI3_MISO:
+      port p
+    pcb-bundle SPI3_SCK:
+      port p
+    pcb-bundle SPI3_NSS:
+      port p
+
+    supports SPI3_NSS:
+      SPI3_NSS.p => stm.PA[15]
+
+    supports SPI3_SCK:
+      SPI3_SCK.p => stm.PB[3]
+    supports SPI3_SCK:
+      SPI3_SCK.p => stm.PC[10]
+
+    supports SPI3_MOSI:
+      SPI3_MOSI.p => stm.PB[5]
+    supports SPI3_MOSI:
+      SPI3_MOSI.p => stm.PC[12]
+
+    supports SPI3_MISO:
+      SPI3_MISO.p => stm.PB[4]
+    supports SPI3_MISO:
+      SPI3_MISO.p => stm.PC[11]
+
+    supports spi-with-cs():
+      require copi-pin: SPI3_MOSI
+      require cipo-pin: SPI3_MISO
+      require sck-pin: SPI3_SCK
+      require cs-pin: SPI3_NSS
+      spi-with-cs().copi => copi-pin.p
+      spi-with-cs().cipo => cipo-pin.p
+      spi-with-cs().sck => sck-pin.p
+      spi-with-cs().cs => cs-pin.p
+
+    supports std-spi():
+      require copi-pin: SPI3_MOSI
+      require cipo-pin: SPI3_MISO
+      require sck-pin: SPI3_SCK
+      std-spi().copi => copi-pin.p
+      std-spi().cipo => cipo-pin.p
+      std-spi().sck => sck-pin.p
+
+    pcb-bundle I2S2-CK:
+      port p
+    pcb-bundle I2S2-SDI:
+      port p
+    pcb-bundle I2S2-SDO:
+      port p
+    pcb-bundle I2S2-WS:
+      port p
+    pcb-bundle I2S2-MCK:
+      port p
+
+    supports I2S2-CK:
+      I2S2-CK.p => stm.PB[13]
+
+    supports I2S2-SDI:
+      I2S2-SDI.p => stm.PB[14]
+
+    supports I2S2-SDO:
+      I2S2-SDO.p => stm.PB[15]
+
+    supports I2S2-WS:
+      I2S2-WS.p => stm.PB[12]
+
+    supports I2S2-MCK:
+      I2S2-MCK.p => stm.PC[6]
+
+    val i2s-io = STM-i2s([I2S-MCK I2S-SDMI])
+
+    supports i2s-io:
+      require ck: I2S2-CK
+      require ws: I2S2-WS
+      require sdi: I2S2-SDI
+      require sdo: I2S2-SDO
+      require mck: I2S2-MCK
+      i2s-io.ck => ck.p
+      i2s-io.ws => ws.p
+      i2s-io.sdmo => sdi.p
+      i2s-io.sdmi => sdo.p
+      i2s-io.mck => mck.p
+
+    pcb-bundle I2S3-CK:
+      port p
+    pcb-bundle I2S3-SDI:
+      port p
+    pcb-bundle I2S3-SDO:
+      port p
+    pcb-bundle I2S3-WS:
+      port p
+    pcb-bundle I2S3-MCK:
+      port p
+
+    supports I2S3-CK:
+      I2S3-CK.p => stm.PC[10]
+
+    supports I2S3-SDI:
+      I2S3-SDI.p => stm.PC[11]
+
+    supports I2S3-SDO:
+      I2S3-SDO.p => stm.PC[12]
+    supports I2S3-SDO:
+      I2S3-SDO.p => stm.PB[5]
+
+    supports I2S3-WS:
+      I2S3-WS.p => stm.PA[4]
+
+    supports I2S3-MCK:
+      I2S3-MCK.p => stm.PC[7]
+
+    supports i2s-io:
+      require ck: I2S3-CK
+      require ws: I2S3-WS
+      require sdi: I2S3-SDI
+      require sdo: I2S3-SDO
+      require mck: I2S3-MCK
+      i2s-io.ck => ck.p
+      i2s-io.ws => ws.p
+      i2s-io.sdmo => sdi.p
+      i2s-io.sdmi => sdo.p
+      i2s-io.mck => mck.p
+
+    pcb-bundle CAN1_RX:
+      port p
+    pcb-bundle CAN1_TX:
+      port p
+
+    supports CAN1_RX:
+      CAN1_RX.p => stm.PB[8]
+    supports CAN1_RX:
+      CAN1_RX.p => stm.PD[0]
+
+    supports CAN1_TX:
+      CAN1_TX.p => stm.PB[9]
+    supports CAN1_TX:
+      CAN1_TX.p => stm.PD[1]
+
+    supports can-logical:
+      require can1-rx: CAN1_RX
+      can-logical.rx => can1-rx.p
+      require can1-tx: CAN1_TX
+      can-logical.tx => can1-tx.p
+
+    pcb-bundle CAN2_RX:
+      port p
+    pcb-bundle CAN2_TX:
+      port p
+
+    supports CAN2_RX:
+      CAN2_RX.p => stm.PB[5]
+    supports CAN2_RX:
+      CAN2_RX.p => stm.PB[12]
+
+    supports CAN2_TX:
+      CAN2_TX.p => stm.PB[6]
+    supports CAN2_TX:
+      CAN2_TX.p => stm.PB[13]
+
+    supports can-logical:
+      require can2-rx: CAN2_RX
+      can-logical.rx => can2-rx.p
+      require can2-tx: CAN2_TX
+      can-logical.tx => can2-tx.p
 
     ; USB support
-    supports usb-data :
+    supports usb-data:
       usb-data.data.N => stm.PA[11]
       usb-data.data.P => stm.PA[12]
 
-    supports usb-data :
-      usb-data.data.N => stm.PB[14]
-      usb-data.data.P => stm.PB[15]
+    val DAC-LIST = [stm.PA[4] stm.PA[5]]
+
+    for (p in DAC-LIST) do:
+      supports dac:
+        dac.dac => p
+
+    ; Reduced Media Independent Interface
+    ; No RX Error Signal Available.
+    val eth = rmii(add-rx-error = false)
+
+    supports eth:
+      eth.ref-clk => stm.PA[1]
+      eth.crs-dv => stm.PA[7]
+      eth.tx-en => stm.PB[11]
+
+      eth.rxd[0] => stm.PC[4]
+      eth.rxd[1] => stm.PC[5]
+
+      eth.txd[0] => stm.PB[12]
+      eth.txd[1] => stm.PB[13]
+
+    ; Media Independent Interface Management
+    ; Protocol
+    supports miim:
+      miim.mdc => stm.PC[1]
+      miim.mdio => stm.PA[2]
