@@ -11,8 +11,7 @@ defpackage stmicro/components/STM32H723VGT6 :
   import power-systems
 
   import stmicro/components/STM32H723VGT6-supports
-
-
+  import stmicro/utils
 ; package params
 val STM-LQFP100 =
   QFP(
@@ -251,13 +250,6 @@ public pcb-component device :
   property(self.area) = 282.307
   property(self.case) = "LQFP-100(14x14)"
   property(self.mounting) = "smd"
-
-; copy/pasted from ethernet-io-lib
-defn get-rail-voltage (p:JITXObject, -- def-V:Double, margin:Double) -> Double :
-  ; TODO determine the communication interface here
-  ;  Ideally - we are placing a property on the voltage rail pin
-  ;  and using that to communicate somehow.
-  def-V * margin
 
 public defn module (
   R-query:ResistorQuery = get-default-resistor-query(),

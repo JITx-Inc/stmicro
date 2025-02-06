@@ -1,0 +1,12 @@
+#use-added-syntax(jitx)
+defpackage stmicro/utils :
+  import core
+  import jitx
+  import jitx/commands
+
+; copy/pasted from ethernet-io-lib
+public defn get-rail-voltage (p:JITXObject, -- def-V:Double, margin:Double) -> Double :
+  ; TODO determine the communication interface here
+  ;  Ideally - we are placing a property on the voltage rail pin
+  ;  and using that to communicate somehow.
+  def-V * margin

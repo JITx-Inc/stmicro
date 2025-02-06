@@ -7,36 +7,19 @@ defpackage stmicro/components/STM32H723VGT6-supports :
   import jitx/commands
 
   import jsl
-  import stmicro/bundles with:
+  import stmicro/utils
+  import stmicro/bundles with :
     prefix(i2s) => STM-
 
   import stmicro/components/api
 
-public pcb-bundle pwm :
-  port pwm
 
 public defn STM32H723VGT6-supports (stm) :
   inside pcb-module :
 
-    pcb-bundle SWD_SWDIO:
-      port p
-    pcb-bundle SWD_SWDCLK:
-      port p
-
-    supports SWD_SWDIO:
-      SWD_SWDIO.p => stm.PA[13]
-    supports SWD_SWDCLK:
-      SWD_SWDCLK.p => stm.PA[14]
-
     supports swd() :
-      require swdio : SWD_SWDIO
-      require swdclk : SWD_SWDCLK
-      swd().swdio  => swdio.p
-      swd().swdclk => swdclk.p
-      property(swdio.p.stm32-signal-name) = "SYS_JTMS-SWDIO"
-      property(swdclk.p.stm32-signal-name) = "SYS_JTCK-SWCLK"
-      property(swdio.p.stm32-pin-mode)  = STMSerialWireDebugMode
-      property(swdclk.p.stm32-pin-mode) = STMSerialWireDebugMode
+      swd().swdio  => stm.PA[13]
+      swd().swdclk => stm.PA[14]
 
     supports jtag:
       jtag.tck => stm.PA[14]
@@ -65,9 +48,6 @@ public defn STM32H723VGT6-supports (stm) :
     for (p in ADC3-LIST, i in 0 to false) do :
       supports adc:
         adc.adc => p
-        ; property(p.stm32-signal-name) = to-string("ADCx_IN%_" % [i])
-        ; property(p.stm32-ip-name) = STMADC1IP
-        ; ;property(swdio.p.stm32-ip-name) = STMADC2IP
 
     for p in pins(stm.PA) do:
       supports gpio :
@@ -109,13 +89,6 @@ public defn STM32H723VGT6-supports (stm) :
       require out-pin: RCC_OSC_OUT
       high-freq-oscillator.in => in-pin.p
       high-freq-oscillator.out => out-pin.p
-      property(in-pin.p.stm32-signal-name) = "RCC_OSC_IN"
-      property(out-pin.p.stm32-signal-name) = "RCC_OSC_OUT"
-      property(in-pin.p.stm32-pin-mode) = STMHSEExternalMode
-      property(out-pin.p.stm32-pin-mode) = STMHSEExternalMode
-      property(in-pin.p.stm32-pin-locked) = true
-      property(out-pin.p.stm32-pin-locked) = true
-
 
     pcb-bundle RCC_OSC32_IN:
       port p
@@ -132,14 +105,6 @@ public defn STM32H723VGT6-supports (stm) :
       require out-pin: RCC_OSC32_OUT
       low-freq-oscillator.in => in-pin.p
       low-freq-oscillator.out => out-pin.p
-      property(in-pin.p.stm32-signal-name) = "RCC_OSC32_IN"
-      property(out-pin.p.stm32-signal-name) = "RCC_OSC32_OUT"
-      property(in-pin.p.stm32-pin-mode) = STMLSEExternalMode
-      property(out-pin.p.stm32-pin-mode) = STMLSEExternalMode
-      property(in-pin.p.stm32-pin-locked) = true
-      property(out-pin.p.stm32-pin-locked) = true
-      property(in-pin.p.stm32-ip-name) = STMRTCIP
-      property(out-pin.p.stm32-ip-name) = STMRTCIP
 
     pcb-bundle USART1_TX:
       port p
@@ -182,14 +147,6 @@ public defn STM32H723VGT6-supports (stm) :
       require rx-pin: USART1_RX
       minimal-uart().tx => tx-pin.p
       minimal-uart().rx => rx-pin.p
-      property(tx-pin.p.stm32-signal-name) = "USART1_TX"
-      property(rx-pin.p.stm32-signal-name) = "USART1_RX"
-      property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      property(tx-pin.p.stm32-pin-locked) = true
-      property(rx-pin.p.stm32-pin-locked) = true
-      property(tx-pin.p.stm32-ip-name) = STMUSART1IP
-      property(rx-pin.p.stm32-ip-name) = STMUSART1IP
 
     val uart-fc = uart(UART-RX, UART-TX, UART-RTS, UART-CTS)
     supports uart-fc :
@@ -201,22 +158,7 @@ public defn STM32H723VGT6-supports (stm) :
       uart-fc.rx => rx-pin.p
       uart-fc.rts => rts-pin.p
       uart-fc.cts => cts-pin.p
-      ; property(tx-pin.p.stm32-signal-name) = "USART1_TX"
-      ; property(rx-pin.p.stm32-signal-name) = "USART1_RX"
-      ; property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
-      ; property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
-      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(tx-pin.p.stm32-pin-locked) = true
-      ; property(rx-pin.p.stm32-pin-locked) = true
-      ; property(rts-pin.p.stm32-pin-locked) = true
-      ; property(cts-pin.p.stm32-pin-locked) = true
-      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(rts-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(cts-pin.p.stm32-ip-name) = STMUSART1IP
+
 
     val uart-fc-ck = uart(UART-RX, UART-TX, UART-RTS, UART-CTS, UART-CK)
 
@@ -231,26 +173,6 @@ public defn STM32H723VGT6-supports (stm) :
       uart-fc-ck.rts => rts-pin.p
       uart-fc-ck.cts => cts-pin.p
       uart-fc-ck.ck => ck-pin.p
-      ; property(tx-pin.p.stm32-signal-name) = "USART1_TX"
-      ; property(rx-pin.p.stm32-signal-name) = "USART1_RX"
-      ; property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
-      ; property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
-      ; property(ck-pin.p.stm32-signal-name) = "USART1_CK"
-      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(ck-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(tx-pin.p.stm32-pin-locked) = true
-      ; property(rx-pin.p.stm32-pin-locked) = true
-      ; property(rts-pin.p.stm32-pin-locked) = true
-      ; property(cts-pin.p.stm32-pin-locked) = true
-      ; property(ck-pin.p.stm32-pin-locked) = true
-      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(rts-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(cts-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(ck-pin.p.stm32-ip-name) = STMUSART1IP
 
     pcb-bundle USART2_TX:
       port p
@@ -297,12 +219,6 @@ public defn STM32H723VGT6-supports (stm) :
       require rx-pin: USART2_RX
       minimal-uart().tx => tx-pin.p
       minimal-uart().rx => rx-pin.p
-      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(tx-pin.p.stm32-signal-name) = "USART2_TX"
-      ; property(rx-pin.p.stm32-signal-name) = "USART2_RX"
-      ; property(tx-pin.p.stm32-ip-name) = STMUSART2IP
-      ; property(rx-pin.p.stm32-ip-name) = STMUSART2IP
 
     property(stm.PA[2].SUPPORTS-BOOT) = true
     property(stm.PA[3].SUPPORTS-BOOT) = true
@@ -360,12 +276,6 @@ public defn STM32H723VGT6-supports (stm) :
       require sda-pin: I2C1_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      ; property(scl-pin.p.stm32-signal-name) = "I2C1_SCL"
-      ; property(sda-pin.p.stm32-signal-name) = "I2C1_SDA"
-      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      ; property(scl-pin.p.stm32-ip-name) = STMI2C1IP
-      ; property(sda-pin.p.stm32-ip-name) = STMI2C1IP
 
     pcb-bundle I2C2_SCL:
       port p
@@ -382,13 +292,6 @@ public defn STM32H723VGT6-supports (stm) :
       require sda-pin: I2C2_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      ; property(scl-pin.p.stm32-signal-name) = "I2C2_SCL"
-      ; property(sda-pin.p.stm32-signal-name) = "I2C2_SDA"
-      ; property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      ; property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      ; property(scl-pin.p.stm32-ip-name) = STMI2C2IP
-      ; property(sda-pin.p.stm32-ip-name) = STMI2C2IP
-
 
     pcb-bundle I2C3_SCL:
       port p
@@ -405,12 +308,6 @@ public defn STM32H723VGT6-supports (stm) :
       require sda-pin: I2C3_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      ;property(scl-pin.p.stm32-signal-name) = "I2C3_SCL"
-      ;property(sda-pin.p.stm32-signal-name) = "I2C3_SDA"
-      ;property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      ;property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      ;property(scl-pin.p.stm32-ip-name) = STMI2C3IP
-      ;property(sda-pin.p.stm32-ip-name) = STMI2C3IP
 
     pcb-bundle I2C4_SCL:
       port p
@@ -436,12 +333,6 @@ public defn STM32H723VGT6-supports (stm) :
       require sda-pin: I2C4_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      ;property(scl-pin.p.stm32-signal-name) = "I2C4_SCL"
-      ;property(sda-pin.p.stm32-signal-name) = "I2C4_SDA"
-      ;property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      ;property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      ;property(scl-pin.p.stm32-ip-name) = STMI2C4IP
-      ;property(sda-pin.p.stm32-ip-name) = STMI2C4IP
 
     pcb-bundle I2C5_SCL:
       port p
@@ -462,12 +353,6 @@ public defn STM32H723VGT6-supports (stm) :
       require sda-pin: I2C5_SDA
       i2c.scl => scl-pin.p
       i2c.sda => sda-pin.p
-      ;property(scl-pin.p.stm32-signal-name) = "I2C5_SCL"
-      ;property(sda-pin.p.stm32-signal-name) = "I2C5_SDA"
-      ;property(scl-pin.p.stm32-pin-mode) = STMI2CMode
-      ;property(sda-pin.p.stm32-pin-mode) = STMI2CMode
-      ;property(scl-pin.p.stm32-ip-name) = STMI2C5IP
-      ;property(sda-pin.p.stm32-ip-name) = STMI2C5IP
 
     pcb-bundle SPI1_MOSI:
       port p
@@ -506,24 +391,12 @@ public defn STM32H723VGT6-supports (stm) :
       require sdo-pin: SPI1_MOSI
       require sdi-pin: SPI1_MISO
       require sck-pin: SPI1_SCK
-      require cs-pin: SPI1_NSS ; how to make this optional?
+      require cs-pin: SPI1_NSS
       spi-with-cs().cipo => sdo-pin.p
       spi-with-cs().copi => sdi-pin.p
       spi-with-cs().sck => sck-pin.p
       spi-with-cs().cs => cs-pin.p
 
-      ; property(sdo-pin.p.stm32-signal-name) = "SPI1_MOSI"
-      ; property(sdi-pin.p.stm32-signal-name) = "SPI1_MISO"
-      ; property(sck-pin.p.stm32-signal-name) = "SPI1_SCK"
-      ; property(cs-pin.p.stm32-signal-name) = "SPI1_NSS"
-      ; property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(sck-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(cs-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(sdo-pin.p.stm32-ip-name) = STMSPI1IP
-      ; property(sdi-pin.p.stm32-ip-name) = STMSPI1IP
-      ; property(sck-pin.p.stm32-ip-name) = STMSPI1IP
-      ; property(cs-pin.p.stm32-ip-name) = STMSPI1IP
 
     pcb-bundle SPI2_MOSI:
       port p
@@ -568,19 +441,6 @@ public defn STM32H723VGT6-supports (stm) :
       spi-with-cs().copi => sdi-pin.p
       spi-with-cs().sck => sck-pin.p
       spi-with-cs().cs => cs-pin.p
-      ; property(sdo-pin.p.stm32-signal-name) = "SPI2_MOSI"
-      ; property(sdi-pin.p.stm32-signal-name) = "SPI2_MISO"
-      ; property(sck-pin.p.stm32-signal-name) = "SPI2_SCK"
-      ; property(cs-pin.p.stm32-signal-name) = "SPI2_NSS"
-      ; property(sdo-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(sdi-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(sck-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(cs-pin.p.stm32-pin-mode) = STMSPIMode
-      ; property(sdo-pin.p.stm32-ip-name) = STMSPI2IP
-      ; property(sdi-pin.p.stm32-ip-name) = STMSPI2IP
-      ; property(sck-pin.p.stm32-ip-name) = STMSPI2IP
-      ; property(cs-pin.p.stm32-ip-name) = STMSPI2IP
-      ; ;property(cs-pin.p.pin-mode) = "NSS_Signal_Hard_Output"
 
     pcb-bundle SPI3_MOSI:
       port p
