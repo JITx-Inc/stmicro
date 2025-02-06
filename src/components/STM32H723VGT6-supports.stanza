@@ -7,36 +7,23 @@ defpackage stmicro/components/STM32H723VGT6-supports :
   import jitx/commands
 
   import jsl
-  import stmicro/bundles with:
+  import stmicro/utils
+  import stmicro/bundles with :
     prefix(i2s) => STM-
 
   import stmicro/components/api
 
-public pcb-bundle pwm :
-  port pwm
 
 public defn STM32H723VGT6-supports (stm) :
   inside pcb-module :
 
-    pcb-bundle SWD_SWDIO:
-      port p
-    pcb-bundle SWD_SWDCLK:
-      port p
-
-    supports SWD_SWDIO:
-      SWD_SWDIO.p => stm.PA[13]
-    supports SWD_SWDCLK:
-      SWD_SWDCLK.p => stm.PA[14]
-
     supports swd() :
-      require swdio : SWD_SWDIO
-      require swdclk : SWD_SWDCLK
-      swd().swdio  => swdio.p
-      swd().swdclk => swdclk.p
-      property(swdio.p.stm32-signal-name) = "SYS_JTMS-SWDIO"
-      property(swdclk.p.stm32-signal-name) = "SYS_JTCK-SWCLK"
-      property(swdio.p.stm32-pin-mode)  = STMSerialWireDebugMode
-      property(swdclk.p.stm32-pin-mode) = STMSerialWireDebugMode
+      swd().swdio  => stm.PA[13]
+      swd().swdclk => stm.PA[14]
+      property(stm.PA[13].stm32-signal-name) = "SYS_JTMS-SWDIO"
+      property(stm.PA[14].stm32-signal-name) = "SYS_JTCK-SWCLK"
+      property(stm.PA[13].stm32-pin-mode)  = STMSerialWireDebugMode
+      property(stm.PA[14].stm32-pin-mode) = STMSerialWireDebugMode
 
     supports jtag:
       jtag.tck => stm.PA[14]
@@ -201,22 +188,7 @@ public defn STM32H723VGT6-supports (stm) :
       uart-fc.rx => rx-pin.p
       uart-fc.rts => rts-pin.p
       uart-fc.cts => cts-pin.p
-      ; property(tx-pin.p.stm32-signal-name) = "USART1_TX"
-      ; property(rx-pin.p.stm32-signal-name) = "USART1_RX"
-      ; property(rts-pin.p.stm32-signal-name) = "USART1_RTS"
-      ; property(cts-pin.p.stm32-signal-name) = "USART1_CTS"
-      ; property(tx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(rx-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(rts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(cts-pin.p.stm32-pin-mode) = STMSerialWireMode
-      ; property(tx-pin.p.stm32-pin-locked) = true
-      ; property(rx-pin.p.stm32-pin-locked) = true
-      ; property(rts-pin.p.stm32-pin-locked) = true
-      ; property(cts-pin.p.stm32-pin-locked) = true
-      ; property(tx-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(rx-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(rts-pin.p.stm32-ip-name) = STMUSART1IP
-      ; property(cts-pin.p.stm32-ip-name) = STMUSART1IP
+
 
     val uart-fc-ck = uart(UART-RX, UART-TX, UART-RTS, UART-CTS, UART-CK)
 

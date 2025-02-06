@@ -1,0 +1,570 @@
+#use-added-syntax(jitx)
+defpackage stmicro/components/STM32F407ZET6 :
+  import core
+  import jitx
+  import jitx/commands
+  import jitx/parts
+
+  import jsl
+  import power-systems
+
+  import stmicro/components/STM32F407ZET6-supports
+  import stmicro/utils
+
+; package params
+val STM-LQFP144 =
+  QFP(
+    num-leads = 144
+    lead-profile = QFP-Lead-Profile(
+      span = 22.0 +/- 0.2
+      pitch = 0.5
+      lead-length = 0.6 +/- 0.15
+      lead-width = 0.22 +/- 0.05
+    )
+    thermal-lead? = false
+    package-body = PackageBody(
+      width = 20.0 +/- 0.2
+      length = 20.0 +/- 0.2
+      height = 1.60 +/- 0.0
+    )
+  )
+
+
+public pcb-component device :
+  name = "STM32F407ZET6"
+  description = "1.8V ~ 3.6V 32-Bit ARM® Cortex®-M4 168MHz FLASH LQFP-144_20x20x05P ST Microelectronics ROHS"
+  manufacturer = "STMICROELECTRONICS"
+  reference-prefix = "U"
+  mpn = "STM32F407ZET6"
+  datasheet = "https://www.st.com/resource/en/datasheet/stm32f405zg.pdf"
+  property(self.stm32-series) = "STM32F4"
+  property(self.stm32-refname) = "STM32F407Z(E-G)Tx"
+  property(self.stm32-mfg-package) = "LQFP144"
+  property(self.rated-temperature) = min-max(-40.0, 105.0)
+
+  pin-properties :
+    [pin:Ref  | pads:Int ... | stm32-pin-name:String ]
+    [ PE[2]   |   1 | "PE2"            ] ;| I/O | FT  | -      | TRACECLK,FSMC_A23,ETH_MII_TXD3,EVENTOUT                                                                             | -
+    [ PE[3]   |   2 | "PE3"            ] ;| I/O | FT  | -      | TRACED0,FSMC_A19,EVENTOUT                                                                                           | -
+    [ PE[4]   |   3 | "PE4"            ] ;| I/O | FT  | -      | TRACED1,FSMC_A20,DCMI_D4,EVENTOUT                                                                                   | -
+    [ PE[5]   |   4 | "PE5"            ] ;| I/O | FT  | -      | TRACED2,FSMC_A21,TIM9_CH1,DCMI_D6,EVENTOUT                                                                          | -
+    [ PE[6]   |   5 | "PE6"            ] ;| I/O | FT  | -      | TRACED3,FSMC_A22,TIM9_CH2,DCMI_D7,EVENTOUT                                                                          | -
+    [ VBAT    |   6 | "VBAT"           ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ PC[13]  |   7 | "PC13-ANTI_TAMP" ] ;| I/O | FT  | (2)(3) | EVENTOUT                                                                                                            | RTC_OUT,RTC_TAMP1,RTC_TS
+    [ PC[14]  |   8 | "PC14-OSC32_IN"  ] ;| I/O | FT  | (2)(3) | OSC32_IN,EVENTOUT                                                                                                   | OSC32_IN(4)
+    [ PC[15]  |   9 | "PC15-OSC32_OUT" ] ;| I/O | FT  | (2)(3) | OSC32_OUT,EVENTOUT                                                                                                  | OSC32_OUT(4)
+    [ PF[0]   |  10 | "PF0"            ] ;| I/O | FT  | -      | FSMC_A0,I2C2_SDA,EVENTOUT                                                                                           | -
+    [ PF[1]   |  11 | "PF1"            ] ;| I/O | FT  | -      | FSMC_A1,I2C2_SCL,EVENTOUT                                                                                           | -
+    [ PF[2]   |  12 | "PF2"            ] ;| I/O | FT  | -      | FSMC_A2,I2C2_SMBA,EVENTOUT                                                                                          | -
+    [ PF[3]   |  13 | "PF3"            ] ;| I/O | FT  | (4)    | FSMC_A3,EVENTOUT                                                                                                    | ADC3_IN9
+    [ PF[4]   |  14 | "PF4"            ] ;| I/O | FT  | (4)    | FSMC_A4,EVENTOUT                                                                                                    | ADC3_IN14
+    [ PF[5]   |  15 | "PF5"            ] ;| I/O | FT  | (4)    | FSMC_A5,EVENTOUT                                                                                                    | ADC3_IN15
+    [ PF[6]   |  18 | "PF6"            ] ;| I/O | FT  | (4)    | TIM10_CH1,FSMC_NIORD,EVENTOUT                                                                                       | ADC3_IN4
+    [ PF[7]   |  19 | "PF7"            ] ;| I/O | FT  | (4)    | TIM11_CH1,FSMC_NREG,EVENTOUT                                                                                        | ADC3_IN5
+    [ PF[8]   |  20 | "PF8"            ] ;| I/O | FT  | (4)    | TIM13_CH1,FSMC_NIOWR,EVENTOUT                                                                                       | ADC3_IN6
+    [ PF[9]   |  21 | "PF9"            ] ;| I/O | FT  | (4)    | TIM14_CH1,FSMC_CD,EVENTOUT                                                                                          | ADC3_IN7
+    [ PF[10]  |  22 | "PF10"           ] ;| I/O | FT  | (4)    | FSMC_INTR,EVENTOUT                                                                                                  | ADC3_IN8
+    [ PH[0]   |  23 | "PH0-OSC_IN"     ] ;| I/O | FT  | -      | OSC_IN,EVENTOUT                                                                                                     | OSC_IN(4)
+    [ PH[1]   |  24 | "PH1-OSC_OUT"    ] ;| I/O | FT  | -      | OSC_OUT,EVENTOUT                                                                                                    | OSC_OUT(4)
+    [ NRST    |  25 | "NRST"           ] ;| I/O | RST | -      | -                                                                                                                   | -
+    [ PC[0]   |  26 | "PC0"            ] ;| I/O | FT  | (4)    | OTG_HS_ULPI_STP,EVENTOUT                                                                                            | ADC123_IN10
+    [ PC[1]   |  27 | "PC1"            ] ;| I/O | FT  | (4)    | ETH_MDC,EVENTOUT                                                                                                    | ADC123_IN11
+    [ PC[2]   |  28 | "PC2"            ] ;| I/O | FT  | (4)    | SPI2_MISO,OTG_HS_ULPI_DIR,ETH_MII_TXD2,I2S2ext_SD,EVENTOUT                                                          | ADC123_IN12
+    [ PC[3]   |  29 | "PC3"            ] ;| I/O | FT  | (4)    | SPI2_MOSI,I2S2_SD,OTG_HS_ULPI_NXT,ETH_MII_TX_CLK,EVENTOUT                                                           | ADC123_IN13
+    [ PA[0]   |  34 | "PA0-WKUP"       ] ;| I/O | FT  | (5)    | USART2_CTS,UART4_TX,ETH_MII_CRS,TIM2_CH1_ETR,TIM5_CH1,TIM8_ETR,EVENTOUT                                             | ADC123_IN0,WKUP(4)
+    [ PA[1]   |  35 | "PA1"            ] ;| I/O | FT  | (4)    | USART2_RTS,UART4_RX,ETH_RMII_REF_CLK,ETH_MII_RX_CLK,TIM5_CH2,TIM2_CH2,EVENTOUT                                      | ADC123_IN1
+    [ PA[2]   |  36 | "PA2"            ] ;| I/O | FT  | (4)    | USART2_TX,TIM5_CH3,TIM9_CH1,TIM2_CH3,ETH_MDIO,EVENTOUT                                                              | ADC123_IN2
+    [ PA[3]   |  37 | "PA3"            ] ;| I/O | FT  | (4)    | USART2_RX,TIM5_CH4,TIM9_CH2,TIM2_CH4,OTG_HS_ULPI_D0,ETH_MII_COL,EVENTOUT                                            | ADC123_IN3
+    [ PA[4]   |  40 | "PA4"            ] ;| I/O | TTa | (4)    | SPI1_NSS,SPI3_NSS,USART2_CK,DCMI_HSYNC,OTG_HS_SOF,I2S3_WS,EVENTOUT                                                  | ADC12_IN4,DAC_OUT1
+    [ PA[5]   |  41 | "PA5"            ] ;| I/O | TTa | (4)    | SPI1_SCK,OTG_HS_ULPI_CK,TIM2_CH1_ETR,TIM8_CH1N,EVENTOUT                                                             | ADC12_IN5,DAC_OUT2
+    [ PA[6]   |  42 | "PA6"            ] ;| I/O | FT  | (4)    | SPI1_MISO,TIM8_BKIN,TIM13_CH1,DCMI_PIXCLK,TIM3_CH1,TIM1_BKIN,EVENTOUT                                               | ADC12_IN6
+    [ PA[7]   |  43 | "PA7"            ] ;| I/O | FT  | (4)    | SPI1_MOSI,TIM8_CH1N,TIM14_CH1,TIM3_CH2,ETH_MII_RX_DV,TIM1_CH1N,ETH_RMII_CRS_DV,EVENTOUT                             | ADC12_IN7
+    [ PC[4]   |  44 | "PC4"            ] ;| I/O | FT  | (4)    | ETH_RMII_RX_D0,ETH_MII_RX_D0,EVENTOUT                                                                               | ADC12_IN14
+    [ PC[5]   |  45 | "PC5"            ] ;| I/O | FT  | (4)    | ETH_RMII_RX_D1,ETH_MII_RX_D1,EVENTOUT                                                                               | ADC12_IN15
+    [ PB[0]   |  46 | "PB0"            ] ;| I/O | FT  | (4)    | TIM3_CH3,TIM8_CH2N,OTG_HS_ULPI_D1,ETH_MII_RXD2,TIM1_CH2N,EVENTOUT                                                   | ADC12_IN8
+    [ PB[1]   |  47 | "PB1"            ] ;| I/O | FT  | (4)    | TIM3_CH4,TIM8_CH3N,OTG_HS_ULPI_D2,ETH_MII_RXD3,TIM1_CH3N,EVENTOUT                                                   | ADC12_IN9
+    [ PB[2]   |  48 | "PB2"            ] ;| I/O | FT  | -      | BOOT1,EVENTOUT                                                                                                      | -
+    [ PF[11]  |  49 | "PF11"           ] ;| I/O | FT  | -      | DCMI_D12,EVENTOUT                                                                                                   | -
+    [ PF[12]  |  50 | "PF12"           ] ;| I/O | FT  | -      | FSMC_A6,EVENTOUT                                                                                                    | -
+    [ PF[13]  |  53 | "PF13"           ] ;| I/O | FT  | -      | FSMC_A7,EVENTOUT                                                                                                    | -
+    [ PF[14]  |  54 | "PF14"           ] ;| I/O | FT  | -      | FSMC_A8,EVENTOUT                                                                                                    | -
+    [ PF[15]  |  55 | "PF15"           ] ;| I/O | FT  | -      | FSMC_A9,EVENTOUT                                                                                                    | -
+    [ PG[0]   |  56 | "PG0"            ] ;| I/O | FT  | -      | FSMC_A10,EVENTOUT                                                                                                   | -
+    [ PG[1]   |  57 | "PG1"            ] ;| I/O | FT  | -      | FSMC_A11,EVENTOUT                                                                                                   | -
+    [ PE[7]   |  58 | "PE7"            ] ;| I/O | FT  | -      | FSMC_D4,TIM1_ETR,EVENTOUT                                                                                           | -
+    [ PE[8]   |  59 | "PE8"            ] ;| I/O | FT  | -      | FSMC_D5,TIM1_CH1N,EVENTOUT                                                                                          | -
+    [ PE[9]   |  60 | "PE9"            ] ;| I/O | FT  | -      | FSMC_D6,TIM1_CH1,EVENTOUT                                                                                           | -
+    [ PE[10]  |  63 | "PE10"           ] ;| I/O | FT  | -      | FSMC_D7,TIM1_CH2N,EVENTOUT                                                                                          | -
+    [ PE[11]  |  64 | "PE11"           ] ;| I/O | FT  | -      | FSMC_D8,TIM1_CH2,EVENTOUT                                                                                           | -
+    [ PE[12]  |  65 | "PE12"           ] ;| I/O | FT  | -      | FSMC_D9,TIM1_CH3N,EVENTOUT                                                                                          | -
+    [ PE[13]  |  66 | "PE13"           ] ;| I/O | FT  | -      | FSMC_D10,TIM1_CH3,EVENTOUT                                                                                          | -
+    [ PE[14]  |  67 | "PE14"           ] ;| I/O | FT  | -      | FSMC_D11,TIM1_CH4,EVENTOUT                                                                                          | -
+    [ PE[15]  |  68 | "PE15"           ] ;| I/O | FT  | -      | FSMC_D12,TIM1_BKIN,EVENTOUT                                                                                         | -
+    [ PB[10]  |  69 | "PB10"           ] ;| I/O | FT  | -      | SPI2_SCK,I2S2_CK,I2C2_SCL,USART3_TX,OTG_HS_ULPI_D3,ETH_MII_RX_ER,TIM2_CH3,EVENTOUT                                  | -
+    [ PB[11]  |  70 | "PB11"           ] ;| I/O | FT  | -      | I2C2_SDA,USART3_RX,OTG_HS_ULPI_D4,ETH_RMII_TX_EN,ETH_MII_TX_EN,TIM2_CH4,EVENTOUT                                    | -
+    [ VCAP[1] |  71 | "VCAP_1"         ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ PB[12]  |  73 | "PB12"           ] ;| I/O | FT  | -      | SPI2_NSS,I2S2_WS,I2C2_SMBA,USART3_CK,TIM1_BKIN,CAN2_RX,OTG_HS_ULPI_D5,ETH_RMII_TXD0,ETH_MII_TXD0,OTG_HS_ID,EVENTOUT | -
+    [ PB[13]  |  74 | "PB13"           ] ;| I/O | FT  | -      | SPI2_SCK,I2S2_CK,USART3_CTS,TIM1_CH1N,CAN2_TX,OTG_HS_ULPI_D6,ETH_RMII_TXD1,ETH_MII_TXD1,EVENTOUT                    | OTG_HS_VBUS
+    [ PB[14]  |  75 | "PB14"           ] ;| I/O | FT  | -      | SPI2_MISO,TIM1_CH2N,TIM12_CH1,OTG_HS_DM,USART3_RTS,TIM8_CH2N,I2S2ext_SD,EVENTOUT                                    | -
+    [ PB[15]  |  76 | "PB15"           ] ;| I/O | FT  | -      | SPI2_MOSI,I2S2_SD,TIM1_CH3N,TIM8_CH3N,TIM12_CH2,OTG_HS_DP,EVENTOUT                                                  | RTC_REFIN
+    [ PD[8]   |  77 | "PD8"            ] ;| I/O | FT  | -      | FSMC_D13,USART3_TX,EVENTOUT                                                                                         | -
+    [ PD[9]   |  78 | "PD9"            ] ;| I/O | FT  | -      | FSMC_D14,USART3_RX,EVENTOUT                                                                                         | -
+    [ PD[10]  |  79 | "PD10"           ] ;| I/O | FT  | -      | FSMC_D15,USART3_CK,EVENTOUT                                                                                         | -
+    [ PD[11]  |  80 | "PD11"           ] ;| I/O | FT  | -      | FSMC_CLE,FSMC_A16,USART3_CTS,EVENTOUT                                                                               | -
+    [ PD[12]  |  81 | "PD12"           ] ;| I/O | FT  | -      | FSMC_ALE,FSMC_A17,TIM4_CH1,USART3_RTS,EVENTOUT                                                                      | -
+    [ PD[13]  |  82 | "PD13"           ] ;| I/O | FT  | -      | FSMC_A18,TIM4_CH2,EVENTOUT                                                                                          | -
+    [ PD[14]  |  85 | "PD14"           ] ;| I/O | FT  | -      | FSMC_D0,TIM4_CH3,EVENTOUT,EVENTOUT                                                                                  | -
+    [ PD[15]  |  86 | "PD15"           ] ;| I/O | FT  | -      | FSMC_D1,TIM4_CH4,EVENTOUT                                                                                           | -
+    [ PG[2]   |  87 | "PG2"            ] ;| I/O | FT  | -      | FSMC_A12,EVENTOUT                                                                                                   | -
+    [ PG[3]   |  88 | "PG3"            ] ;| I/O | FT  | -      | FSMC_A13,EVENTOUT                                                                                                   | -
+    [ PG[4]   |  89 | "PG4"            ] ;| I/O | FT  | -      | FSMC_A14,EVENTOUT                                                                                                   | -
+    [ PG[5]   |  90 | "PG5"            ] ;| I/O | FT  | -      | FSMC_A15,EVENTOUT                                                                                                   | -
+    [ PG[6]   |  91 | "PG6"            ] ;| I/O | FT  | -      | FSMC_INT2,EVENTOUT                                                                                                  | -
+    [ PG[7]   |  92 | "PG7"            ] ;| I/O | FT  | -      | FSMC_INT3,USART6_CK,EVENTOUT                                                                                        | -
+    [ PG[8]   |  93 | "PG8"            ] ;| I/O | FT  | -      | USART6_RTS,ETH_PPS_OUT,EVENTOUT                                                                                     | -
+    [ PC[6]   |  96 | "PC6"            ] ;| I/O | FT  | -      | I2S2_MCK,TIM8_CH1,SDIO_D6,USART6_TX,DCMI_D0,TIM3_CH1,EVENTOUT                                                       | -
+    [ PC[7]   |  97 | "PC7"            ] ;| I/O | FT  | -      | I2S3_MCK,TIM8_CH2,SDIO_D7,USART6_RX,DCMI_D1,TIM3_CH2,EVENTOUT                                                       | -
+    [ PC[8]   |  98 | "PC8"            ] ;| I/O | FT  | -      | TIM8_CH3,SDIO_D0,TIM3_CH3,USART6_CK,DCMI_D2,EVENTOUT                                                                | -
+    [ PC[9]   |  99 | "PC9"            ] ;| I/O | FT  | -      | I2S_CKIN,MCO2,TIM8_CH4,SDIO_D1,I2C3_SDA,DCMI_D3,TIM3_CH4,EVENTOUT                                                   | -
+    [ PA[8]   | 100 | "PA8"            ] ;| I/O | FT  | -      | MCO1,USART1_CK,TIM1_CH1,I2C3_SCL,OTG_FS_SOF,EVENTOUT                                                                | -
+    [ PA[9]   | 101 | "PA8"            ] ;| I/O | FT  | -      | USART1_TX,TIM1_CH2,I2C3_SMBA,DCMI_D0,EVENTOUT                                                                       | OTG_FS_VBUS
+    [ PA[10]  | 102 | "PA8"            ] ;| I/O | FT  | -      | USART1_RX,TIM1_CH3,OTG_FS_ID,DCMI_D1,EVENTOUT                                                                       | -
+    [ PA[11]  | 103 | "PA8"            ] ;| I/O | FT  | -      | USART1_CTS,CAN1_RX,TIM1_CH4,OTG_FS_DM,EVENTOUT                                                                      | -
+    [ PA[12]  | 104 | "PA12"           ] ;| I/O | FT  | -      | USART1_RTS,CAN1_TX,TIM1_ETR,OTG_FS_DP,EVENTOUT                                                                      | -
+    [ PA[13]  | 105 | "PA13"           ] ;| I/O | FT  | -      | JTMS-SWDIO,EVENTOUT                                                                                                 | -
+    [ VCAP[2] | 106 | "VCAP_2"         ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ PA[14]  | 109 | "PA14"           ] ;| I/O | FT  | -      | JTCK-SWCLK,EVENTOUT                                                                                                 | -
+    [ PA[15]  | 110 | "PA15"           ] ;| I/O | FT  | -      | JTDI,SPI3_NSS,I2S3_WS,TIM2_CH1_ETR,SPI1_NSS,EVENTOUT                                                                | -
+    [ PC[10]  | 111 | "PC10"           ] ;| I/O | FT  | -      | SPI3_SCK,I2S3_CK,UART4_TX,SDIO_D2,DCMI_D8,USART3_TX,EVENTOUT                                                        | -
+    [ PC[11]  | 112 | "PC11"           ] ;| I/O | FT  | -      | UART4_RX,SPI3_MISO,SDIO_D3,DCMI_D4,USART3_RX,I2S3ext_SD,EVENTOUT                                                    | -
+    [ PC[12]  | 113 | "PC12"           ] ;| I/O | FT  | -      | UART5_TX,SDIO_CK,DCMI_D9,SPI3_MOSI,I2S3_SD,USART3_CK,EVENTOUT                                                       | -
+    [ PD[0]   | 114 | "PD0"            ] ;| I/O | FT  | -      | FSMC_D2,CAN1_RX,EVENTOUT                                                                                            | -
+    [ PD[1]   | 115 | "PD1"            ] ;| I/O | FT  | -      | FSMC_D3,CAN1_TX,EVENTOUT                                                                                            | -
+    [ PD[2]   | 116 | "PD2"            ] ;| I/O | FT  | -      | TIM3_ETR,UART5_RX,SDIO_CMD,DCMI_D11,EVENTOUT                                                                        | -
+    [ PD[3]   | 117 | "PD3"            ] ;| I/O | FT  | -      | FSMC_CLK,USART2_CTS,EVENTOUT                                                                                        | -
+    [ PD[4]   | 118 | "PD4"            ] ;| I/O | FT  | -      | FSMC_NOE,USART2_RTS,EVENTOUT                                                                                        | -
+    [ PD[5]   | 119 | "PD5"            ] ;| I/O | FT  | -      | FSMC_NWE,USART2_TX,EVENTOUT                                                                                         | -
+    [ PD[6]   | 122 | "PD6"            ] ;| I/O | FT  | -      | FSMC_NWAIT,USART2_RX,EVENTOUT                                                                                       | -
+    [ PD[7]   | 123 | "PD7"            ] ;| I/O | FT  | -      | USART2_CK,FSMC_NE1,FSMC_NCE2,EVENTOUT                                                                               | -
+    [ PG[9]   | 124 | "PG9"            ] ;| I/O | FT  | -      | USART6_RX,FSMC_NE2,FSMC_NCE3,EVENTOUT                                                                               | -
+    [ PG[10]  | 125 | "PG10"           ] ;| I/O | FT  | -      | FSMC_NCE4_1,FSMC_NE3,EVENTOUT                                                                                       | -
+    [ PG[11]  | 126 | "PG11"           ] ;| I/O | FT  | -      | FSMC_NCE4_2,ETH_MII_TX_EN,ETH _RMII_TX_EN,EVENTOUT                                                                  | -
+    [ PG[12]  | 127 | "PG12"           ] ;| I/O | FT  | -      | FSMC_NE4,USART6_RTS,EVENTOUT                                                                                        | -
+    [ PG[13]  | 128 | "PG13"           ] ;| I/O | FT  | -      | FSMC_A24,USART6_CTS,ETH_MII_TXD0,ETH_RMII_TXD0,EVENTOUT                                                             | -
+    [ PG[14]  | 129 | "PG14"           ] ;| I/O | FT  | -      | FSMC_A25,USART6_TX,ETH_MII_TXD1,ETH_RMII_TXD1,EVENTOUT                                                              | -
+    [ PG[15]  | 132 | "PG15"           ] ;| I/O | FT  | -      | USART6_CTS,DCMI_D13,EVENTOUT                                                                                        | -
+    [ PB[3]   | 133 | "PB3"            ] ;| I/O | FT  | -      | JTDO,TRACESWO,SPI3_SCK,I2S3_CK,TIM2_CH2,SPI1_SCK,EVENTOUT                                                           | -
+    [ PB[4]   | 134 | "PB4"            ] ;| I/O | FT  | -      | NJTRST,SPI3_MISO,TIM3_CH1,SPI1_MISO,I2S3ext_SD,EVENTOUT                                                             | -
+    [ PB[5]   | 135 | "PB5"            ] ;| I/O | FT  | -      | I2C1_SMBA,CAN2_RX,OTG_HS_ULPI_D7,ETH_PPS_OUT,TIM3_CH2,SPI1_MOSI,SPI3_MOSI,DCMI_D10,I2S3_SD,EVENTOUT                 | -
+    [ PB[6]   | 136 | "PB6"            ] ;| I/O | FT  | -      | I2C1_SCL,TIM4_CH1,CAN2_TX,DCMI_D5,USART1_TX,EVENTOUT                                                                | -
+    [ PB[7]   | 137 | "PB7"            ] ;| I/O | FT  | -      | I2C1_SDA,FSMC_NL,DCMI_VSYNC,USART1_RX,TIM4_CH2,EVENTOUT                                                             | -
+    [ BOOT[0] | 138 | "BOOT0"          ] ;| I   | B   | -      | -                                                                                                                   | VPP
+    [ PB[8]   | 139 | "PB8"            ] ;| I/O | FT  | -      | TIM4_CH3,SDIO_D4,TIM10_CH1,DCMI_D6,ETH_MII_TXD3,I2C1_SCL,CAN1_RX,EVENTOUT                                           | -
+    [ PB[9]   | 140 | "PB9"            ] ;| I/O | FT  | -      | SPI2_NSS,I2S2_WS,TIM4_CH4,TIM11_CH1,SDIO_D5,DCMI_D7,I2C1_SDA,CAN1_TX,EVENTOUT                                       | -
+    [ PE[0]   | 141 | "PE0"            ] ;| I/O | FT  | -      | TIM4_ETR,FSMC_NBL0,DCMI_D2,EVENTOUT                                                                                 | -
+    [ PE[1]   | 142 | "PE1"            ] ;| I/O | FT  | -      | FSMC_NBL1,DCMI_D3,EVENTOUT                                                                                          | -
+    [ PDR_ON  | 143 | "PDR_ON"         ] ;| I   | FT  | -      | -                                                                                                                   | -
+    [ VSSA    |  31 | "VSSA"           ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VREF+   |  32 | "VREF+"          ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDDA    |  33 | "VDDA"           ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[0]  | 144 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[1]  |  17 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[2]  |  30 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[3]  |  39 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[4]  | 131 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[5]  | 121 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[6]  | 108 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[7]  |  95 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[8]  |  62 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[9]  |  52 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[10] |  72 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VDD[11] |  84 | "VDD"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[0]  |  16 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[1]  |  38 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[2]  | 130 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[3]  | 120 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[4]  | 107 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[5]  |  94 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[6]  |  61 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[7]  |  51 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+    [ VSS[8]  |  83 | "VSS"            ] ;| S   | -   | -      | -                                                                                                                   | -
+
+  ; Setup landpattern
+  assign-landpattern $ create-landpattern(STM-LQFP144)
+
+  ; Setup box symbol
+  val io-a-r = #R(IO-A)
+  val io-b-r = #R(IO-B)
+  val io-c-r = #R(IO-C)
+  val io-d-r = #R(IO-D)
+  val io-e-r = #R(IO-E)
+  val io-f-r = #R(IO-F)
+  val io-g-r = #R(IO-G)
+  val supply-r = #R(supply)
+  val sys-r = #R(sys)
+
+  val box = BoxSymbol(self)
+
+  ; assign banks
+  set-bank(io-a-r, find-pins-by-regex(box, "PA.*"))
+  set-bank(io-b-r, find-pins-by-regex(box, "PB.*"))
+  set-bank(io-c-r, find-pins-by-regex(box, "PC.*"))
+  set-bank(io-d-r, find-pins-by-regex(box, "PD.*"))
+  set-bank(io-e-r, find-pins-by-regex(box, "PE.*"))
+  set-bank(io-f-r, find-pins-by-regex(box, "PF.*"))
+  set-bank(io-g-r, find-pins-by-regex(box, "PG.*"))
+  set-bank(supply-r, find-pins-by-regex(box, "V.*"))
+  set-bank(sys-r, [self.NRST, self.BOOT[0], self.PDR_ON, self.PH[0], self.PH[1]])
+
+  ; Arrange supply bank
+  set-grid(box, [2,2], supply-r)
+  set-row(1, find-pins-by-regex(box, "VSS.*", bank = supply-r))
+  set-column(0, find-pins-by-regex(box, "VSS.*", bank = supply-r))
+  set-alignment(S, find-pins-by-regex(box, "VSS.*", bank = supply-r))
+
+  set-row(0, find-pins-by-regex(box, "VCAP.*", bank = supply-r))
+  set-column(0, find-pins-by-regex(box, "VCAP.*", bank = supply-r))
+  set-alignment(N, find-pins-by-regex(box, "VCAP.*", bank = supply-r))
+
+  set-row(1, find-pins-by-regex(box, "VBAT.*"))
+  set-column(1, find-pins-by-regex(box, "VBAT.*"))
+  set-alignment(S, find-pins-by-regex(box, "VBAT.*"))
+
+  set-alignment(N, find-pins-by-regex(box, "VDD.*"))
+  set-head-margin(1.0, self.VDDA)
+  set-head-margin(1.0, self.VREF+)
+
+  ; Arrange sys bank
+  set-grid(box, [2,2], sys-r)
+  set-row(1, [self.BOOT[0], self.NRST])
+  set-column(0, [self.BOOT[0], self.NRST])
+
+  ; arrange io-a bank
+  set-grid(box, [2,2], io-a-r)
+  set-row(0, find-pins-by-regex(box, "PA.*", bank = io-a-r))
+  set-column(0, find-pins-by-regex(box, "PA.*", bank = io-a-r))
+  set-alignment(N, find-pins-by-regex(box, "PA.*", bank = io-a-r))
+
+  ; arrange io-b bank
+  set-grid(box, [2,2], io-b-r)
+  set-row(1, find-pins-by-regex(box, "PB.*", bank = io-b-r))
+  set-column(0, find-pins-by-regex(box, "PB.*", bank = io-b-r))
+  set-alignment(N, find-pins-by-regex(box, "PB.*", bank = io-b-r))
+
+  ; arrange io-c bank
+  set-grid(box, [2,2], io-c-r)
+  set-row(0, find-pins-by-regex(box, "PC.*", bank = io-c-r))
+  set-column(0, find-pins-by-regex(box, "PC.*", bank = io-c-r))
+  set-alignment(N, find-pins-by-regex(box, "PC.*", bank = io-c-r))
+
+  ; arrange io-d bank
+  set-grid(box, [2,2], io-d-r)
+  set-row(1, find-pins-by-regex(box, "PD.*", bank = io-d-r))
+  set-column(0, find-pins-by-regex(box, "PD.*", bank = io-d-r))
+  set-alignment(N, find-pins-by-regex(box, "PD.*", bank = io-d-r))
+
+  ; arrange io-e bank
+  set-grid(box, [2,2], io-e-r)
+  set-row(0, find-pins-by-regex(box, "PE.*", bank = io-e-r))
+  set-column(0, find-pins-by-regex(box, "PE.*", bank = io-e-r))
+  set-alignment(N, find-pins-by-regex(box, "PE.*", bank = io-e-r))
+
+  ; arrange io-f bank
+  set-grid(box, [2,2], io-f-r)
+  set-row(1, find-pins-by-regex(box, "PF.*", bank = io-f-r))
+  set-column(0, find-pins-by-regex(box, "PF.*", bank = io-f-r))
+  set-alignment(N, find-pins-by-regex(box, "PF.*", bank = io-f-r))
+
+  ; arrange io-g bank
+  set-grid(box, [2,2], io-g-r)
+  set-row(0, find-pins-by-regex(box, "PG.*", bank = io-g-r))
+  set-column(0, find-pins-by-regex(box, "PG.*", bank = io-g-r))
+  set-alignment(N, find-pins-by-regex(box, "PG.*", bank = io-g-r))
+  ; assign symbols
+  assign-symbols(
+    io-a-r => box,
+    io-b-r => box,
+    io-c-r => box,
+    io-d-r => box,
+    io-e-r => box,
+    io-f-r => box,
+    io-g-r => box,
+    supply-r => box,
+    sys-r => box
+  )
+
+  property(self.category) = "ic"
+  property(self.manufacturer_aliases) = ["STMicroelectronics"]
+  property(self.cofactr_id) = "IMYI4S9AB68G"
+  property(self.reference_prefix) = "U"
+  property(self.trust) = "low"
+  property(self.case) = "LQFP-144(20x20)"
+  property(self.mounting) = "smd"
+
+
+public defn module (
+  R-query:ResistorQuery = get-default-resistor-query(),
+  C-query:CapacitorQuery = get-default-capacitor-query()
+  ):
+
+  pcb-module module-int :
+
+    port rail-VDD : power
+    port rail-VDDA : power
+    port rail-VBAT : power
+
+    port VREF : power
+
+    net GND (rail-VDD.V-, rail-VDDA.V-, rail-VBAT.V-)
+
+    port BOOT
+
+    public inst stm : device
+
+    net (GND, stm.VSSA, VREF.V-)
+    for p in ports(stm.VSS) do:
+      net (GND, p)
+
+    net (stm.VREF+, VREF.V+)
+
+    ;  The BOOT0 pin is used to control whether the MCU
+    ; runs the bootloader on reset or not. By pulling, this
+    ; signal high - we can force bootloader mode.
+    net (stm.BOOT[0], BOOT)
+    insert-pulldown(stm.BOOT[0], GND, qb = R-query)
+
+    ;==================================================
+    ;== Define supports
+    ;==================================================
+
+    ; generate supports
+    STM32F407ZET6-supports(stm)
+
+    ;==================================================
+    ;== Insert decoupling capacitors
+    ;==================================================
+    ; See AN4938, Section 2.2 for information
+    ;  on decoupling capacitors.
+
+    val bypass-query = CapacitorQuery(
+      C-query,
+      sort! = SortKey(rated-voltage = Increasing)
+    )
+
+    ; Voltage Margin Relative to the intended voltage.
+    ;  This helps set the minimum voltage range to search.
+    val cap-margin = 2.0
+    ; Set a maximum voltage search range for components
+    val max-voltage = 16.0
+
+    val VDD-voltage = get-rail-voltage(rail-VDD, def-V = 3.3, margin = cap-margin)
+    val VDDA-voltage = get-rail-voltage(rail-VDDA, def-V = 3.3, margin = cap-margin)
+    val BAT-voltage = get-rail-voltage(rail-VBAT, def-V = 3.3, margin = cap-margin)
+
+    val max-rail-V = maximum([VDD-voltage, VDDA-voltage, BAT-voltage])
+
+    ; Per Pin Decoupler
+    val fine-C = create-capacitor(
+      bypass-query,
+      capacitance = 0.1e-6,
+      rated-voltage = Interval(max-rail-V, max-voltage)
+    )
+
+    ; Bulk Capacitance - We place one of these per rail.
+    val bulk-C = create-capacitor(
+      bypass-query,
+      capacitance = 4.7e-6
+      rated-voltage = Interval(max-rail-V, max-voltage)
+      case = ["0603", "0805", "1206"]
+    )
+
+    ; rail-VDD
+    for v in ports(stm.VDD) do :
+      net (v, rail-VDD.V+)
+      val c = insert-bypass(v, GND, elem-type = fine-C)
+      schematic-group(c) = bypass-cap-IO
+
+    val cb-vdd = insert-bypass(stm.VDD[0], stm.VSS[0], elem-type = bulk-C)
+    schematic-group(cb-vdd) = bypass-cap-IO
+
+    ; rail-VDDA
+    net (stm.VDDA, rail-VDDA.V+)
+    val cvdda = insert-bypass(stm.VDDA, stm.VSSA, elem-type = fine-C)
+    val cb-vdda = insert-bypass(stm.VDDA, stm.VSSA, elem-type = bulk-C)
+    val cvref = insert-bypass(stm.VREF+, stm.VSSA, elem-type = fine-C)
+    schematic-group([cvdda, cb-vdda, cvref]) = bypass-cap-VDDA
+
+    ; rail-VBAT
+    ; no bulk decoupler
+    net (stm.VBAT, rail-VBAT.V+)
+    val cvbat = insert-bypass(stm.VBAT, stm.VSS[0], elem-type = fine-C)
+    schematic-group(cvbat) = bypass-cap-VBAT
+
+
+    val VCAP-C = create-capacitor(
+      bypass-query,
+      capacitance = 2.2e-6,
+      rated-voltage = Interval(max-rail-V, max-voltage)
+    )
+
+    net VCAP ()
+    for p in ports(stm.VCAP) do :
+      net (VCAP, p)
+      val c = insert-bypass(p, stm.VSS[0], elem-type = VCAP-C)
+      schematic-group(c) = vcap-caps
+
+    ; have to use port here, `node` crashes the pin solver
+    ; TODO: is 8 a good number? should i keep is smaller until needed?
+    port gnd-fanout:pin[8]
+    for p in pins(gnd-fanout) do:
+      net (GND p)
+
+    supports usb-2-connector :
+      require usb:usb-data
+      usb-2-connector.vbus.V+ => stm.PA[9]
+      usb-2-connector.vbus.V- => gnd-fanout[0] ; TODO: use pin solver?
+      usb-2-connector.bus.data.N => usb.data.N
+      usb-2-connector.bus.data.P => usb.data.P
+      usb-2-connector.id => stm.PA[10]
+  ; Returned Instantiable
+  module-int
+
+doc: \<DOC>
+Prototype MCU Circuit
+
+This module contains the implementation of some basic features
+for a prototype circuit. It consists of:
+
+1.  The Bootstrap resistor and tactile switch
+2.  Optional HW Rev config strap
+3.  Optional DIP Switch
+4.  Optional 12MHz Crystal Oscillator Circuit
+
+The `stmicro/components/STM32F407ZET6/module` instance
+is public via the `mcu` child. The user can directly
+access the underlying microcontroller IC via that child.
+
+@param hw-rev-bits Number of bits for a hardware revision
+configuration strap, consisting of resistors. If zero, then
+no config straps are created.
+@param hw-rev Hardware Revision Value - This value is only
+valid if `hw-rev-bits` is greater than zero. This value is
+encoded into the config straps of the revision bits
+@param num-DIP-sw Number of DIP switches to instantiate. Each
+also provides a pull-up resistor and connection to a GPIO on
+the MCU. If zero, then no DIP switches are created
+@param make-oscillator If `true`, the circuit will instantiate
+a crystal oscillator circuit at 12MHz
+
+<DOC>
+public defn proto-circuit (
+  --
+  hw-rev-bits:Int = 3,
+  hw-rev:Int = 0,
+  num-DIP-sw:Int = 4,
+  make-oscillator:True|False = true,
+  R-query:ResistorQuery = get-default-resistor-query(),
+  C-query:CapacitorQuery = get-default-capacitor-query()
+  ) -> Instantiable :
+  pcb-module proto-circuit-int:
+    port rail-3v3 : power
+
+    port reset-n
+    port boot-ctl
+
+    public inst mcu : stmicro/components/STM32F407ZET6/module(R-query, C-query)
+
+    net (rail-3v3, mcu.rail-VDD)
+    net GND (rail-3v3.V-)
+
+    net (reset-n, mcu.stm.NRST)
+
+    ; Analog Interface
+
+    val ferrite = passives/ferrite/BLM18KG(220)
+    inst filt-3v3 : unbalanced-filter(ferrite)
+    net (rail-3v3, filt-3v3.vin)
+    net (filt-3v3.vout, mcu.rail-VDDA)
+
+    ; STM suggests connecting VREF to VDDA even if not used.
+    net (filt-3v3.vout, mcu.VREF)
+
+    ;; ---- Crystal ----
+    ;  12MHz +/- 50ppm
+
+    if make-oscillator:
+      val xtal-type = passives/crystal/FA-238(12)
+
+      val resonator-type = create-crystal-resonator(
+        xtal-type = xtal-type,
+        C-load = typ(property(xtal-type.C-load))
+        ; From Datasheet Section 6.36.16, Table 51, Page 149
+        C-stray = typ(5.0e-12),
+        V-rating = 2.0 * 3.3 ; AVDDH
+      )
+
+      inst resonator : resonator-type
+      net (resonator.COMMON, GND)
+
+      require OSC:stmicro/bundles/high-freq-oscillator from mcu
+
+      net (resonator.p[1], OSC.out)
+      ; Add a series resistor for dampening if needed.
+      insert-resistor(
+        resonator.p[2], OSC.in,
+        R-query,
+        resistance = 0.0,
+        precision = (1 %)
+      )
+
+    ; BOOT0 - causes the microcontroller to enter bootloader
+    ;   mode on reset
+
+    ; Add a jumnper so that we can control this from USB but we can also
+    ;  disable it by removing the resistor if we are having trouble.
+    insert-resistor(boot-ctl, mcu.BOOT, R-query, resistance = 0.0, precision = (1 %))
+
+    ; This switch allows us to manually force the bootloader sequence
+    ; on the microcontroller in the case we are not using the microcontroller.
+    inst boot-sw : switches/tactile-sw/device
+    net (boot-sw.p[1], rail-3v3.V+)
+    net (boot-sw.p[2], mcu.BOOT)
+
+
+    ; DIP Switches for configuration
+    if num-DIP-sw > 0:
+      inst DIP : switches/DIP-sw/device(num-DIP-sw)
+
+      net dip-cfg:pin[num-DIP-sw]
+      for i in 1 through num-DIP-sw do:
+        net (dip-cfg[i - 1], DIP.p[i])
+        net (GND, DIP.p[i + num-DIP-sw])
+
+        insert-pullup(dip-cfg[i - 1], rail-3v3, qb = R-query)
+
+      require dip-gpio:gpio[num-DIP-sw] from mcu
+      for i in 0 to num-DIP-sw do:
+        net (dip-cfg[i], dip-gpio[i].gpio)
+
+    ; Board Revision Config
+    ;  These pullups are for indicating which board version
+    ; the hardware represents to the microcontroller at runtime.
+    if hw-rev-bits > 0:
+      val pullup-R-t = create-resistor(R-query, resistance = 4.7e3, precision = (1 %))
+      inst configs : ConfigStrap(
+        num-elems = hw-rev-bits,
+        comp = pullup-R-t,
+        pack? = One(LongitudinalPacking(margin = 0.2))
+      )
+      net (configs.hi, rail-3v3.V+)
+      net (configs.lo, GND)
+
+      require straps:config-strap-bus(hw-rev-bits) from configs
+      require rev-gpio:gpio[hw-rev-bits] from mcu
+      for i in 0 to hw-rev-bits do:
+        net (straps.config[i], rev-gpio[i].gpio)
+
+      set-straps-config(configs, hw-rev)
+
+  ; Returned Instantiable
+  proto-circuit-int

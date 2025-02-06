@@ -36,3 +36,6 @@ public pcb-bundle i2s (pins:Tuple<stmicro/bundles/I2SPins>):
     switch(p) :
       I2S-SDMI : make-port(`sdmi)
       I2S-MCK  : make-port(`mck)
+
+public pcb-bundle pwm :
+  port pwm
